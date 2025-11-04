@@ -1,0 +1,42 @@
+{
+  "originHash" : "85e6e8980e1c906f42cc3fec8ff67aa01ccfb47888252b557862316276c6ad41",
+  "pins" : [
+    {
+      "identity" : "ecmaswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/theolampert/ECMASwift.git",
+      "state" : {
+        "revision" : "eb837bf3f6767536ef849a0e9b57e4ca01b43196",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "5642d1ffe3dbe628592443bd14154e31929727b4",
+        "version" : "5.19.2"
+      }
+    },
+    {
+      "identity" : "sdwebimageswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
+      "state" : {
+        "revision" : "b7af5e6bd9c2987e41730400d1baad13d74a141a",
+        "version" : "3.0.4"
+      }
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift",
+      "state" : {
+        "revision" : "a95fc6df17d108bd99210db5e8a9bac90fe984b8",
+        "version" : "0.15.3"
+      }
+    }
+  ],
+  "version" : 3
+}
