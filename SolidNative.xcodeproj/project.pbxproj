@@ -11,6 +11,7 @@
 		4834BE0E2BF056FD00F17D84 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4834BE0D2BF056FD00F17D84 /* SDWebImageSwiftUI */; };
 		4834BE102BF0585400F17D84 /* SNWebImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4834BE0F2BF0585400F17D84 /* SNWebImage.swift */; };
 		4834BE122BF060C100F17D84 /* SNList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4834BE112BF060C100F17D84 /* SNList.swift */; };
+		483FC1362EBB364A004C182E /* SNWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483FC1352EBB3644004C182E /* SNWebView.swift */; };
 		48484D792BE4614A0024AE4E /* SolidNativeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D782BE4614A0024AE4E /* SolidNativeApp.swift */; };
 		48484D7B2BE4614A0024AE4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D7A2BE4614A0024AE4E /* ContentView.swift */; };
 		48484D7D2BE4614C0024AE4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48484D7C2BE4614C0024AE4E /* Assets.xcassets */; };
@@ -50,10 +51,24 @@
 		48F91E1D2D7B23B6001D5BEA /* ECMASwift in Frameworks */ = {isa = PBXBuildFile; productRef = 48F91E1C2D7B23B6001D5BEA /* ECMASwift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		483FC13F2EBB410E004C182E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		481F59A32EB9BAF5004B8B73 /* SNNavigationLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNNavigationLink.swift; sourceTree = "<group>"; };
 		4834BE0F2BF0585400F17D84 /* SNWebImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNWebImage.swift; sourceTree = "<group>"; };
 		4834BE112BF060C100F17D84 /* SNList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNList.swift; sourceTree = "<group>"; };
+		483FC1352EBB3644004C182E /* SNWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNWebView.swift; sourceTree = "<group>"; };
 		48484D752BE4614A0024AE4E /* SolidNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SolidNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48484D782BE4614A0024AE4E /* SolidNativeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidNativeApp.swift; sourceTree = "<group>"; };
 		48484D7A2BE4614A0024AE4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -196,6 +211,7 @@
 				48A640C42BF3457E001DB33F /* SNTabView.swift */,
 				48B398DF2EB878B400471E0E /* SNNavigationStack.swift */,
 				481F59A32EB9BAF5004B8B73 /* SNNavigationLink.swift */,
+				483FC1352EBB3644004C182E /* SNWebView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -239,6 +255,7 @@
 				48484D712BE4614A0024AE4E /* Sources */,
 				48484D722BE4614A0024AE4E /* Frameworks */,
 				48484D732BE4614A0024AE4E /* Resources */,
+				483FC13F2EBB410E004C182E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -345,6 +362,7 @@
 				48484D9B2BE462D70024AE4E /* SNButtonView.swift in Sources */,
 				4876BC5F2BE5F7AB00909088 /* SNGrid.swift in Sources */,
 				48484DAF2BE4AED60024AE4E /* SNStack.swift in Sources */,
+				483FC1362EBB364A004C182E /* SNWebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

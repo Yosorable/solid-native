@@ -52,6 +52,9 @@ class SNRender: SolidNativeModule {
         viewManager.registerElement(SNTabView.self)
         viewManager.registerElement(SNNavigationStack.self)
         viewManager.registerElement(SNNavigationLink.self)
+        if #available(iOS 26.0, *) {
+            viewManager.registerElement(SNWebView.self)
+        }
         
         print("[SNRender] init")
     }

@@ -53,13 +53,18 @@ class SNNavigationStack: SolidNativeView {
             newVal.forEach { toRelease[$0.id] = false }
             
             let toDelIds = toRelease.filter { $0.value }.map { $0.key }
+            
+            // 先cleanup
             toDelIds.forEach { id in
-                var node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
-                while let parent = node.parentElement {
-                    node = parent
-                }
+                let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
                 SolidNativeCore.shared.jsContext.evaluateScript("cleanPage(\"\(id)\")")
-                SolidNativeCore.shared.renderer.viewManager.removePageByRoot(node)
+            }
+            // 还会触发渲染, 延迟回收节点
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                toDelIds.forEach { id in
+                    let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
+                    SolidNativeCore.shared.renderer.viewManager.removePageByRoot(node)
+                }
             }
         }
         

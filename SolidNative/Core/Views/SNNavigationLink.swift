@@ -7,28 +7,13 @@
 
 import SwiftUI
 
-struct LazyValue<T>: Hashable {
-    let id: UUID = UUID()
-    
-    static func == (lhs: LazyValue<T>, rhs: LazyValue<T>) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    let builder: () -> T
-    var value: T { builder() }
-}
-
 class SNNavigationLink: SolidNativeView {
     class override var name: String {
         "sn_navigationlink"
     }
     
     struct SNNavigationLink: View {
-                @ObservedObject var props: SolidNativeProps
+        @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
 
         var body: some View {

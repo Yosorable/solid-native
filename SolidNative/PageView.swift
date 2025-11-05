@@ -10,6 +10,7 @@ import ECMASwift
 
 struct RootPageView: View {
     @Environment(\.dismiss) var dismiss
+    @Namespace private var namespace
     
     init() {
         if SolidNativeCore.shared == nil {
@@ -34,7 +35,7 @@ struct RootPageView: View {
             VStack {
                 HStack {
                     Spacer()
-                    Button {
+                    let btn1 = Button {
                         let rootId = SolidNativeCore.shared.rootElement.id.uuidString
                         for (k, v) in SolidNativeCore.shared.renderer.viewManager.createdViewRegistry {
                             let address = Unmanaged.passUnretained(v).toOpaque()
@@ -45,9 +46,10 @@ struct RootPageView: View {
                             print("字典内存地址: \(pointer)")
                         }
                     } label: {
-                        Text("debug")
+                        Image(systemName: "desktopcomputer")
+                            .font(.system(size: 23)).frame(width: 41, height: 41)
                     }
-                    Button {
+                    let btn2 = Button {
                         dismiss()
                         let root = SolidNativeCore.shared.rootElement
                         SolidNativeCore.shared.jsContext.evaluateScript("cleanPage('\(root.id.uuidString)')")
@@ -67,9 +69,17 @@ struct RootPageView: View {
                         }
                         
                     } label: {
-                        Text("close")
+                        Image(systemName: "xmark")
+                            .font(.system(size: 23)).frame(width: 41, height: 41)
                     }
-                }.padding(.trailing)
+
+                    HStack(spacing: 5) {
+                        btn1
+                        Divider().frame(height: 41)
+                        btn2
+                    }.background(Color.primary.opacity(0.5).blur(radius: 50).clipShape(RoundedRectangle(cornerRadius: 20)))
+                }
+                .padding(.trailing)
                 Spacer()
             }
         }

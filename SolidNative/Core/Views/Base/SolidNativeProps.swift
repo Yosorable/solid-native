@@ -79,4 +79,17 @@ class SolidNativeProps: ObservableObject {
             callback.call(withArguments: args)
         }
     }
+
+    func debugPrint() {
+#if DEBUG
+        print("children:")
+        for child in children {
+            print("\tid: \(child.id.uuidString), name: \(child.getName())")
+        }
+        print("props:")
+        for k in keys {
+            print("\tkey: \(k), value: \(values[k]??.toString() ?? "nil")")
+        }
+#endif
+    }
 }
