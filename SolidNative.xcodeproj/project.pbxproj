@@ -48,6 +48,7 @@
 		48B0E4FE2BE65272008507AB /* SNRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B0E4FD2BE65272008507AB /* SNRectangle.swift */; };
 		48B398E02EB878C000471E0E /* SNNavigationStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B398DF2EB878B400471E0E /* SNNavigationStack.swift */; };
 		48B614652DE522DD0039A6A2 /* ECMASwift in Frameworks */ = {isa = PBXBuildFile; productRef = 48B614642DE522DD0039A6A2 /* ECMASwift */; };
+		48E140682EBB94F200CF0A00 /* MWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E140672EBB94EF00CF0A00 /* MWebView.swift */; };
 		48F91E1D2D7B23B6001D5BEA /* ECMASwift in Frameworks */ = {isa = PBXBuildFile; productRef = 48F91E1C2D7B23B6001D5BEA /* ECMASwift */; };
 /* End PBXBuildFile section */
 
@@ -103,6 +104,7 @@
 		48B0E4FB2BE649D7008507AB /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		48B0E4FD2BE65272008507AB /* SNRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNRectangle.swift; sourceTree = "<group>"; };
 		48B398DF2EB878B400471E0E /* SNNavigationStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNNavigationStack.swift; sourceTree = "<group>"; };
+		48E140672EBB94EF00CF0A00 /* MWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MWebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +243,7 @@
 				4876BC522BE5F0C100909088 /* ZoomableScrollView.swift */,
 				48682C3B2BF1CA9E00471ED7 /* utils.swift */,
 				48682C3D2BF1CD7900471ED7 /* LazyView.swift */,
+				48E140672EBB94EF00CF0A00 /* MWebView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 				4876BC4F2BE5E85F00909088 /* SNSecureField.swift in Sources */,
 				48484D9F2BE463020024AE4E /* SNView.swift in Sources */,
 				48484DB12BE4C10C0024AE4E /* SNSpacer.swift in Sources */,
+				48E140682EBB94F200CF0A00 /* MWebView.swift in Sources */,
 				48484DB62BE4CA2C0024AE4E /* View+Modifiers.swift in Sources */,
 				48B398E02EB878C000471E0E /* SNNavigationStack.swift in Sources */,
 				48B0E4FC2BE649D7008507AB /* Utils.swift in Sources */,

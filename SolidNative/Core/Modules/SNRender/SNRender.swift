@@ -52,9 +52,7 @@ class SNRender: SolidNativeModule {
         viewManager.registerElement(SNTabView.self)
         viewManager.registerElement(SNNavigationStack.self)
         viewManager.registerElement(SNNavigationLink.self)
-        if #available(iOS 26.0, *) {
-            viewManager.registerElement(SNWebView.self)
-        }
+        viewManager.registerElement(SNWebView.self)
         
         print("[SNRender] init")
     }
@@ -253,14 +251,14 @@ class ViewManager {
     }
     
     func clearAll() {
-        viewRegistry = [:]
-        
         createdViewRegistry.forEach { key, val in
             val.next = nil
             val.prev = nil
             val.parentElement = nil
             val.firstChild = nil
+            val.indirectChildren.removeAll()
             val.children.removeAll()
+            val.props.values.removeAll()
         }
         createdViewRegistry = [:]
     }

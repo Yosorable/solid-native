@@ -8,7 +8,6 @@
 import SwiftUI
 import WebKit
 
-@available(iOS 26.0, *)
 class SNWebView: SolidNativeView {
     class override var name: String {
         "sn_webview"
@@ -17,34 +16,37 @@ class SNWebView: SolidNativeView {
     struct SNWebView: View {
         @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
-        @State private var page: WebPage
+        @ObservedObject var webViewController: WebViewController
         
-        init(props: SolidNativeProps, owner: SolidNativeView? = nil) {
+        init(props: SolidNativeProps, owner: SolidNativeView? = nil, webViewController: WebViewController) {
             self.props = props
             self.owner = owner
-            
-            var config = WebPage.Configuration()
-            config.upgradeKnownHostsToHTTPS = false
+            self.webViewController = webViewController
 
-            self.page = WebPage(configuration: config)
-            if let html = props.getStringOrNil(name: "html") {
-                page.load(html: html)
-            } else if let url = props.getStringOrNil(name: "url"), let u = URL(string: url) {
-                page.load(u)
+            if let url = props.getStringOrNil(name: "url"), let u = URL(string: url) {
+                self.webViewController.load(URLRequest(url: u))
             } else if let file = props.getStringOrNil(name: "file"), let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
                 let target = base.appending(path: file)
-                page.load(target)
+                self.webViewController.load(URLRequest(url: target))
+            } else if let html = props.getStringOrNil(name: "html") {
+                self.webViewController.loadHTMLString(html, baseURL: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appending(component: "index.html"))
             }
         }
+        
+        @State var isLoading = false
 
         var body: some View {
-            WebView(page)
-                .webViewBackForwardNavigationGestures(.disabled)
+            MWebView(webViewController: webViewController)
+                .ignoresSafeArea(.all)
                 .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
         }
     }
     
+    lazy var webViewController: WebViewController = {
+        return WebViewController()
+    }()
+    
     override func render() -> AnyView {
-        return AnyView(SNWebView(props: props, owner: self))
+        return AnyView(SNWebView(props: props, owner: self, webViewController: webViewController))
     }
 }
