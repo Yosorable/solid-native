@@ -17,9 +17,9 @@ class SNNavigationLink: SolidNativeView {
         weak var owner: SolidNativeView?
 
         var body: some View {
-            if let dest = props.getPropAsJSValue(name: "destination"), let callRes = dest.call(withArguments: nil), callRes.isObject, callRes.hasProperty("id"), let id = callRes.forProperty("id").toString() {
+            if let dest = props.getPropAsJSValue(name: "destination"), dest.isObject, dest.hasProperty("id"), let id = dest.forProperty("id").toString() {
+                let _ = owner?.indirectChildren.append(SolidNativeCore.shared.renderer.viewManager.getViewById(id))
                 NavigationLink(destination: {
-                    // LazyView(vm.getViewById(id).render())
                     LazyView(SolidNativeCore.shared.renderer.viewManager.getViewById(id).render())
                 }, label: {
                     ForEach(props.children, id: \.id) {
