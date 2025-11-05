@@ -218,6 +218,7 @@ class ViewManager {
         if let nv = v as? SNTabView {
             nv.tabIds.forEach {
                 print("tab id: \($0)")
+                // MARK: todo: cleanAllPages时多次清除了
                 SolidNativeCore.shared.jsContext.evaluateScript("cleanPage(\"\($0)\")")
                 if let c = createdViewRegistry[$0] {
                     deactivateAllChildren(root: c)

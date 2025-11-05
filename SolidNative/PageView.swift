@@ -52,22 +52,11 @@ struct RootPageView: View {
                     let btn2 = Button {
                         dismiss()
                         let root = SolidNativeCore.shared.rootElement
-                        SolidNativeCore.shared.jsContext.evaluateScript("cleanPage('\(root.id.uuidString)')")
+                        SolidNativeCore.shared.jsContext.evaluateScript("cleanAllPages()")
                         SolidNativeCore.shared.renderer.viewManager.removePageByRoot(root)
 
                         // MARK: TODO
                         SolidNativeCore.shared.rootElement = SNView()
-                        
-                        for (k, v) in SolidNativeCore.shared.renderer.viewManager.createdViewRegistry {
-                            
-                            let address = Unmanaged.passUnretained(v).toOpaque()
-                            print("id: \(k), name: \(v.getName()), parent: \(v.parentElement?.getName() ?? "no"), address: \(address)")
-                            
-                            for (a, b) in v.props.values {
-                                print("\t\(a): \(b?.toString() ?? "nil")")
-                            }
-                        }
-                        
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 23)).frame(width: 41, height: 41)
