@@ -10,9 +10,12 @@ import JavaScriptCore
 
 
 class JSValueBuilder {
-    let value = JSValue(newObjectIn: SolidNativeCore.shared.jsContext)!
+    let value: JSValue
+    let jsCtx: JSContext
     
-    init() {
+    init(core: SolidNativeCore) {
+        self.jsCtx = core.jsContext
+        value = JSValue(newObjectIn: jsCtx)!
         print("[JSValueBuilder] init")
     }
     
@@ -41,7 +44,7 @@ class JSValueBuilder {
     func addSyncFunction<U>(_ name: String, fn: @escaping () -> U?) {
         let objcFunc: @convention(block) (JSValue) -> JSValue? = { jsValue in
             let result = fn()
-            return JSValue(object: result, in: SolidNativeCore.shared.jsContext)
+            return JSValue(object: result, in: self.jsCtx)
             
         }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
@@ -55,7 +58,7 @@ class JSValueBuilder {
             }
 
             if let result = fn(arg1) {
-                return JSValue(object: result, in: SolidNativeCore.shared.jsContext)
+                return JSValue(object: result, in: self.jsCtx)
             }
             return nil
         }
@@ -71,7 +74,7 @@ class JSValueBuilder {
             }
             
             if let result = fn(arg1, arg2) {
-                return JSValue(object: result, in: SolidNativeCore.shared.jsContext)
+                return JSValue(object: result, in: self.jsCtx)
             }
             return nil
         }
@@ -83,7 +86,7 @@ class JSValueBuilder {
         let objcFunc: @convention(block) (JSValue, JSValue, JSValue) -> JSValue? = { jsValue1, jsValue2, jsValue3 in
             
             if let result = fn(jsValue1, jsValue2, jsValue3) {
-                return JSValue(object: result, in: SolidNativeCore.shared.jsContext)
+                return JSValue(object: result, in: self.jsCtx)
             }
             return nil
         }
@@ -101,7 +104,7 @@ class JSValueBuilder {
             }
             
             if let result = fn(arg1, arg2, arg3, arg4) {
-                return JSValue(object: result, in: SolidNativeCore.shared.jsContext)
+                return JSValue(object: result, in: self.jsCtx)
             }
             return nil
         }

@@ -16,7 +16,7 @@ class SNAsyncImage: SolidNativeView {
     
     struct SNAsyncImage: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let src = props.getString(name: "src")
@@ -50,7 +50,7 @@ class SNAsyncImage: SolidNativeView {
                             
                         },
                         placeholder: {
-                            vm.getViewById(id).render()
+                            SolidNativeCore.shared.renderer.viewManager.getViewById(id).render()
                         }
                     )
                 )

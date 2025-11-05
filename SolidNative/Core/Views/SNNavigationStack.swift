@@ -21,7 +21,7 @@ class SNNavigationStack: SolidNativeView {
     
     struct SNNavigationStack: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         @State var path: [NavigationRouteParam]
 
         init(props: SolidNativeProps, owner: SolidNativeView) {
@@ -54,12 +54,12 @@ class SNNavigationStack: SolidNativeView {
             
             let toDelIds = toRelease.filter { $0.value }.map { $0.key }
             toDelIds.forEach { id in
-                var node = vm.getViewById(id)
+                var node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
                 while let parent = node.parentElement {
                     node = parent
                 }
                 SolidNativeCore.shared.jsContext.evaluateScript("cleanPage(\"\(id)\")")
-                vm.removePageByRoot(node)
+                SolidNativeCore.shared.renderer.viewManager.removePageByRoot(node)
             }
         }
         
@@ -91,7 +91,7 @@ class SNNavigationStack: SolidNativeView {
                 }
                 .navigationDestination(for: NavigationRouteParam.self) { item in
                     if item.id != "" {
-                        let node = vm.getViewById(item.id)
+                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(item.id)
                         
                         if node.children.count == 1 {
                             node.firstChild?.render()

@@ -16,7 +16,7 @@ class SNVStack: SolidNativeView {
     
     struct SNVStack: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()
@@ -51,7 +51,8 @@ class SNHStack: SolidNativeView {
     
     struct SNHStack: View {
         @ObservedObject var props: SolidNativeProps
-        let parentNodeID: String
+//        let parentNodeID: String
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()
@@ -67,13 +68,13 @@ class SNHStack: SolidNativeView {
                     child.render()
                 }
             }
-            .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: vm.getViewById(parentNodeID))
+            .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
             
         }
     }
     
     override func render() -> AnyView {
-        return AnyView(SNHStack(props: self.props, parentNodeID: self.id.uuidString))
+        return AnyView(SNHStack(props: self.props, owner: self))
     }
     
 }
@@ -86,7 +87,7 @@ class SNZStack: SolidNativeView {
     
     struct SNZStack: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()
@@ -116,7 +117,7 @@ class SNLazyVStack: SolidNativeView {
     
     struct SNLazyVStack: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()
@@ -151,7 +152,7 @@ class SNLazyHStack: SolidNativeView {
     
     struct SNLazyHStack: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()

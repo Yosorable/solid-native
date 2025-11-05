@@ -29,12 +29,13 @@ class SNNavigationLink: SolidNativeView {
     
     struct SNNavigationLink: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
 
         var body: some View {
             if let dest = props.getPropAsJSValue(name: "destination"), let callRes = dest.call(withArguments: nil), callRes.isObject, callRes.hasProperty("id"), let id = callRes.forProperty("id").toString() {
                 NavigationLink(destination: {
-                    LazyView(vm.getViewById(id).render())
+                    // LazyView(vm.getViewById(id).render())
+                    LazyView(SolidNativeCore.shared.renderer.viewManager.getViewById(id).render())
                 }, label: {
                     ForEach(props.children, id: \.id) {
                         $0.render()

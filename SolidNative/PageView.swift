@@ -6,24 +6,26 @@
 //
 
 import SwiftUI
-
-
-class Route: ObservableObject {
-    @Published var routes: [String] = []
-    static let shared = Route()
-}
+import ECMASwift
 
 struct RootPageView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var route = Route.shared
     
     init() {
-        SolidNativeCore.shared = SolidNativeCore()
+        if SolidNativeCore.shared == nil {
+            SolidNativeCore.shared = SolidNativeCore()
+            SolidNativeCore.shared.jsRuntime = JSRuntime()
+            SolidNativeCore.shared.renderer = SNRender(core: SolidNativeCore.shared, vm: ViewManager())
+        } else {
+            let newRoot = SNView()
+            SolidNativeCore.shared.rootElement = newRoot
+            SolidNativeCore.shared.renderer.viewManager.createdViewRegistry[newRoot.id.uuidString] = newRoot
+        }
         SolidNativeCore.shared.runApp()
     }
     
     var body: some View {
-        return  ZStack {
+        ZStack {
             if SolidNativeCore.shared.rootElement.children.count == 1 {
                 SolidNativeCore.shared.rootElement.children.first?.render()
             } else {
@@ -33,16 +35,31 @@ struct RootPageView: View {
                 HStack {
                     Spacer()
                     Button {
+                        let rootId = SolidNativeCore.shared.rootElement.id.uuidString
+                        for (k, v) in SolidNativeCore.shared.renderer.viewManager.createdViewRegistry {
+                            let address = Unmanaged.passUnretained(v).toOpaque()
+                            let retainCount = CFGetRetainCount(v as CFTypeRef)
+                            print("id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootId ? "[root]" : "")")
+                        }
+                        withUnsafePointer(to: &SolidNativeCore.shared.renderer.viewManager.createdViewRegistry) { pointer in
+                            print("字典内存地址: \(pointer)")
+                        }
+                    } label: {
+                        Text("debug")
+                    }
+                    Button {
                         dismiss()
                         let root = SolidNativeCore.shared.rootElement
                         SolidNativeCore.shared.jsContext.evaluateScript("cleanPage('\(root.id.uuidString)')")
-                        vm.removePageByRoot(root)
+                        SolidNativeCore.shared.renderer.viewManager.removePageByRoot(root)
 
                         // MARK: TODO
                         SolidNativeCore.shared.rootElement = SNView()
                         
-                        for (k, v) in vm.createdViewRegistry {
-                            print("id: \(k), name: \(v.getName()), parent: \(v.parentElement?.getName() ?? "no")")
+                        for (k, v) in SolidNativeCore.shared.renderer.viewManager.createdViewRegistry {
+                            
+                            let address = Unmanaged.passUnretained(v).toOpaque()
+                            print("id: \(k), name: \(v.getName()), parent: \(v.parentElement?.getName() ?? "no"), address: \(address)")
                             
                             for (a, b) in v.props.values {
                                 print("\t\(a): \(b?.toString() ?? "nil")")
@@ -52,55 +69,9 @@ struct RootPageView: View {
                     } label: {
                         Text("close")
                     }
-                }
+                }.padding(.trailing)
                 Spacer()
             }
-        }
-        
-        
-        NavigationStack(path: $route.routes) {
-            SolidNativeCore.shared.rootElement.render()
-                .toolbar {
-                    Button {
-                        dismiss()
-                        let last = SolidNativeCore.shared.rootElement
-                        SolidNativeCore.shared.jsContext.evaluateScript("cleanPage('\(last.id.uuidString)')")
-                        vm.removePageById(last.id.uuidString)
-                    } label: {
-                        Text("close")
-                    }
-                }
-                .navigationDestination(for: String.self) { id in
-                    if SolidNativeCore.shared.navigationStack.last?.id.uuidString == id {
-                        SolidNativeCore.shared.navigationStack.last!.render()
-//                            .navigationTitle(Text("Page"))
-//                            .navigationBarTitleDisplayMode(.inline)
-                    } else {
-                        let _ = print(id)
-                        Text("page not found")
-                            .navigationTitle(Text("Error"))
-                            .navigationBarTitleDisplayMode(.inline)
-                    }
-                }
-                .onChange(of: route.routes) { newVal in
-                    let cnt = SolidNativeCore.shared.navigationStack.count
-                    if newVal.count < cnt {
-                        let removeCnt = cnt - newVal.count
-                        print("now count: \(cnt), remove \(removeCnt)")
-                        var toDel = [SNView]()
-                        for _ in 0..<removeCnt {
-                            let last = SolidNativeCore.shared.navigationStack.removeLast()
-                            toDel.append(last)
-                        }
-                        for i in 0..<removeCnt {
-                            let last = toDel[i]
-                            SolidNativeCore.shared.jsContext.evaluateScript("cleanPage('\(last.id.uuidString)')")
-                            vm.removePageById(last.id.uuidString)
-                        }
-                    } else {
-                        print("push")
-                    }
-                }
         }
     }
 }

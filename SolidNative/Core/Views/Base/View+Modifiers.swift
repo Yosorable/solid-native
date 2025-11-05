@@ -27,7 +27,7 @@ extension View {
 struct SolidNativeViewModifiers: ViewModifier {
     var mods: [[String: JSValue?]]
     var keys: [String]
-    var owner: SolidNativeView?
+    weak var owner: SolidNativeView?
     
     
     func body(content: Content) -> some View {
@@ -105,7 +105,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                     }
                 case "background":
                     if jsValue?.isObject == true, jsValue?.hasProperty("id") ?? false, let id = jsValue?.forProperty("id").toString() {
-                        let node = vm.getViewById(id)
+                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
                         owner?.indirectChildren.append(node)
                         view = AnyView(view.background {
                             node.render()
@@ -115,7 +115,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                     }
                 case "overlay":
                     if jsValue?.isObject == true, let id = jsValue?.forProperty("id").toString() {
-                        let node = vm.getViewById(id)
+                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
                         owner?.indirectChildren.append(node)
                         view = AnyView(view.overlay {
                             node.render()
@@ -921,7 +921,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                     view = AnyView(view.navigationBarTitleDisplayMode(md == "inline" ? .inline : (md == "large" ? .large : .automatic)))
                     
                 case "swipeActions":
-                    let addSAFunc = { [weak owner] (_ v: AnyView, _ cfg: JSValue) in
+                    let addSAFunc = {(_ v: AnyView, _ cfg: JSValue) in
                         guard let contentId = cfg.forProperty("content").forProperty("id").toString() else {
                             return v
                         }
@@ -939,7 +939,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                                 edge = .trailing
                             }
                         }
-                        let node = vm.getViewById(contentId)
+                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(contentId)
                         owner?.indirectChildren.append(node)
                         return AnyView(
                             v.swipeActions(edge: edge, allowsFullSwipe: allowsFullSwipe) {

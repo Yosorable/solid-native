@@ -17,7 +17,7 @@ class SNWebImage: SolidNativeView {
     
     struct SNWebImage: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let src = props.getString(name: "src")
@@ -51,8 +51,8 @@ class SNWebImage: SolidNativeView {
                             
                         },
                         placeholder: {
-                            let node = vm.getViewById(id)
-                            let _ = owner.indirectChildren.append(node)
+                            let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
+                            let _ = owner?.indirectChildren.append(node)
                             node.render()
                         }
                     )

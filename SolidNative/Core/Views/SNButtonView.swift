@@ -16,7 +16,7 @@ class SNButtonView: SolidNativeView {
     
     struct SNButton: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
 
         func onPress() {
             if let callback = props.getPropAsJSValue(name: "onPress") {

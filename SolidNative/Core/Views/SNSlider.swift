@@ -16,7 +16,7 @@ class SNSlider: SolidNativeView {
     
     struct SNSlider: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         @State var tmpVal: Double = 0
 
         

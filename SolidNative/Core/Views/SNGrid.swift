@@ -16,7 +16,7 @@ class SNLazyVGrid: SolidNativeView {
     
     struct SNLazyVGrid: View {
                 @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         var body: some View {
             let children = props.getChildren()

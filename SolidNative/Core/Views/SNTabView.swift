@@ -22,7 +22,8 @@ struct SNTabChild: View {
     }
     var body: some View {
         if let id = id {
-            vm.getViewById(id).render()
+//            SolidNativeCore.shared.renderer.viewManager.getViewById(id).render()
+            SolidNativeCore.shared.renderer.viewManager.getViewById(id).render()
         }
     }
 }
@@ -41,7 +42,7 @@ class SNTabView: SolidNativeView {
     struct SNTabView: View {
         @ObservedObject var props: SolidNativeProps
         let onAddTab: (String)->Void
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
         
         var body: some View {
@@ -54,15 +55,15 @@ class SNTabView: SolidNativeView {
                         ZStack {
                             SNTabChild(content: tabs?.atIndex(idx).forProperty("content"), onAddTab: onAddTab)
                         }
-                    )
-                    .tabItem {
+                    ).tabItem {
                         if let id = tabs?.atIndex(idx).forProperty("tabItem").forProperty("id").toString() {
-                            let v = vm.getViewById(id)
-                            let _ = owner.indirectChildren.append(v)
+                            let v = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
+                            let _ = owner?.indirectChildren.append(v)
                             v.render()
                         }
                     }
                     .tag(idx)
+                    
                 }
             }
             .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)

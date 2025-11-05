@@ -19,9 +19,8 @@ class SNTextView: SolidNativeView {
     }
 
     struct SNTextView: View {
-
-                @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        @ObservedObject var props: SolidNativeProps
+        weak var owner: SolidNativeView?
 
         var body: some View {
             let text = props.getString(name: "text")

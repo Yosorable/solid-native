@@ -16,7 +16,7 @@ class SNSecureField: SolidNativeView {
     
     struct SNSecureField: View {
         @ObservedObject var props: SolidNativeProps
-        let owner: SolidNativeView
+        weak var owner: SolidNativeView?
         
 
         var body: some View {

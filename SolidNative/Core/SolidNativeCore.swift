@@ -20,11 +20,12 @@ class SolidNativeCore {
         return jsRuntime.context
     }
     private let moduleManager = ModuleManager()
+    var renderer: SNRender!
     
     init() {
         // jsContext.isInspectable = true
-        moduleManager.registerModule(SNRender.self)
-        injectCoreIntoContext()
+//        moduleManager.registerModule(SNRender.self)
+//        injectCoreIntoContext()
         // Configure base module
         
         // Needs to inject function to grab other modules from registry and return their JSValues
@@ -36,16 +37,24 @@ class SolidNativeCore {
         print("[SolidNativeCore] deinit")
     }
     
-    private func injectCoreIntoContext() {
-        let getNativeModule: @convention(block) (_ name: String) -> JSValue = { [weak self] str in
-            guard let strongSelf = self else {
-                return JSValue(undefinedIn: self?.jsRuntime.context)
-            }
-            return strongSelf.moduleManager.createModuleJsValueByName(str)!
-        }
-        jsContext.setObject(getNativeModule, forKeyedSubscript:
-                                "_getNativeModule" as NSString)
+    var done = false
+    private func injectModuleIntoContext() {
+        guard !done else { return }
+        done = true
+        let r = renderer.getJSValueRepresentation()
+//        jsContext.setValue(r, forKey: "SolidNativeRenderer")
+        jsContext.setObject(r, forKeyedSubscript: "SolidNativeRenderer" as NSString)
     }
+//    private func injectCoreIntoContext() {
+//        let getNativeModule: @convention(block) (_ name: String) -> JSValue = { [weak self] str in
+//            guard let strongSelf = self else {
+//                return JSValue(undefinedIn: self?.jsRuntime.context)
+//            }
+//            return strongSelf.moduleManager.createModuleJsValueByName(str)!
+//        }
+//        jsContext.setObject(getNativeModule, forKeyedSubscript:
+//                                "_getNativeModule" as NSString)
+//    }
     
     // SNRender will pull it from the singleton
     var rootElement = SNView()
@@ -104,6 +113,7 @@ class SolidNativeCore {
     
     func runApp() {
         do {
+            injectModuleIntoContext()
             let bundle = try String(contentsOf: SolidNativeCore.bundlePath)
             
             jsContext.exceptionHandler = { (_, value) in
