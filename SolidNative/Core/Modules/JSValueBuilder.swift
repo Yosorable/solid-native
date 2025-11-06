@@ -82,10 +82,15 @@ class JSValueBuilder {
     }
     
     // Three arguments
-    func addSyncFunction<W>(_ name: String, fn: @escaping (JSValue, JSValue, JSValue) -> W?) {
+    func addSyncFunction<T, U, V, W>(_ name: String, fn: @escaping (T, U, V) -> W?) {
         let objcFunc: @convention(block) (JSValue, JSValue, JSValue) -> JSValue? = { jsValue1, jsValue2, jsValue3 in
+            guard let arg1 = self.processValue(jsValue1, asType: T.self),
+                  let arg2 = self.processValue(jsValue2, asType: U.self),
+                  let arg3 = self.processValue(jsValue3, asType: V.self) else {
+                return nil
+            }
             
-            if let result = fn(jsValue1, jsValue2, jsValue3) {
+            if let result = fn(arg1, arg2, arg3) {
                 return JSValue(object: result, in: self.jsCtx)
             }
             return nil

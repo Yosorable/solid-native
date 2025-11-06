@@ -145,7 +145,32 @@ class SNRender: SolidNativeModule {
                 fn.call(withArguments:[])
             }
         }
+
+        builder.addSyncFunction("_webView_load") { (_ id: String, _ urlString: String)  in
+            guard let node = self.viewManager.createdViewRegistry[id] as? SNWebView else { return }
+            var url: URL
+            if let u = URL(string: urlString) {
+                url = u
+            } else {
+                let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                url = baseURL.appending(path: urlString)
+            }
+            node.webViewController.load(URLRequest(url: url))
+        }
         
+        builder.addSyncFunction("_webView_loadHTMLString") { (_ id: JSValue, html: JSValue, baseURLString: JSValue) in
+            guard let id = id.toString(), let html = html.toString() else { return }
+            guard let node = self.viewManager.createdViewRegistry[id] as? SNWebView else { return }
+            var url: URL? = nil
+            if baseURLString.isString, let urlString = baseURLString.toString(), let u = URL(string: urlString), u.scheme != nil {
+                url = u.standardized
+            } else if baseURLString.isString, let urlString = baseURLString.toString() {
+                let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                url = baseURL.appending(path: urlString).standardized
+            }
+            node.webViewController.loadHTMLString(html, baseURL: url)
+        }
+
         return builder.value
     }
 }

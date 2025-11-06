@@ -1,5 +1,5 @@
 {
-  "originHash" : "649f9a013e674099a240aa8e98039b126b6d2080d0a938b8364c8b0ae7686bcb",
+  "originHash" : "aea9f384cab5c36910b0df1dd4c384ca67b2603740eb5272d204bd5924fc7132",
   "pins" : [
     {
       "identity" : "ecmaswift",
@@ -35,24 +35,6 @@
       "state" : {
         "revision" : "a95fc6df17d108bd99210db5e8a9bac90fe984b8",
         "version" : "0.15.3"
-      }
-    },
-    {
-      "identity" : "swift-quickjs",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jam/swift-quickjs",
-      "state" : {
-        "branch" : "main",
-        "revision" : "7c6a4314768e74602056e522395df5c5525fc711"
-      }
-    },
-    {
-      "identity" : "swiftlintplugins",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
-      "state" : {
-        "revision" : "ecafb5b056cb7995324f0d310a61f30661d00cad",
-        "version" : "0.62.2"
       }
     }
   ],
