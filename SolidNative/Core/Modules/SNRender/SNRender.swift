@@ -149,11 +149,11 @@ class SNRender: SolidNativeModule {
         builder.addSyncFunction("_webView_load") { (_ id: String, _ urlString: String)  in
             guard let node = self.viewManager.createdViewRegistry[id] as? SNWebView else { return }
             var url: URL
-            if let u = URL(string: urlString) {
-                url = u
+            if let u = URL(string: urlString), u.scheme != nil {
+                url = u.standardized
             } else {
                 let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                url = baseURL.appending(path: urlString)
+                url = baseURL.appending(path: urlString).standardized
             }
             node.webViewController.webView.load(URLRequest(url: url))
         }
