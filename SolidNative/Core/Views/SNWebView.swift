@@ -38,7 +38,7 @@ class SNWebView: SolidNativeView {
     }
     
     lazy var webViewController: WebViewController = {
-        return WebViewController()
+        return WebViewController(parent: self)
     }()
     
     override func render() -> AnyView {

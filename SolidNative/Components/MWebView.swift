@@ -12,8 +12,9 @@ import WebKit
 class WebViewController: ObservableObject {
     public var webView: WKWebView!
     @Published var isLoading: Bool = false
+    weak var parent: SNWebView?
 
-    init(webView: WKWebView? = nil) {
+    init(webView: WKWebView? = nil, parent: SNWebView) {
         print("+++ WebViewController init")
         if let webView = webView {
             self.webView = webView
@@ -41,6 +42,8 @@ class WebViewController: ObservableObject {
             webView.allowsBackForwardNavigationGestures = true
             self.webView = webView
         }
+        
+        self.parent = parent
     }
     
     deinit {
@@ -75,6 +78,7 @@ struct MWebView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> WKWebView {
         webViewController.webView.navigationDelegate = context.coordinator
+        webViewController.webView.uiDelegate = context.coordinator
         return webViewController.webView
     }
 
@@ -84,7 +88,7 @@ struct MWebView: UIViewRepresentable {
     }
 
     // Coordinator 处理 WebView 状态
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         var parent: MWebView
 
         init(_ parent: MWebView) {
@@ -102,6 +106,30 @@ struct MWebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
             parent.webViewController.updateLoadingState(isLoading: false)
             // Optionally handle errors here
+        }
+
+        func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor () -> Void) {
+            defer { completionHandler() }
+            guard let holder = parent.webViewController.parent, let fn = holder.props.getPropAsJSValue(name: "onAlert") else {
+                return
+            }
+            fn.call(withArguments: [message])
+        }
+
+        func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor (String?) -> Void) {
+            var res: String? = nil
+            defer { completionHandler(res) }
+            guard let holder = parent.webViewController.parent, let fn = holder.props.getPropAsJSValue(name: "onPrompt") else {
+                return
+            }
+            var args = [prompt]
+            if let dt = defaultText {
+                args.append(dt)
+            }
+            guard let val = fn.call(withArguments: args) else { return }
+            if !val.isNull, !val.isUndefined {
+                res = val.toString()
+            }
         }
     }
 }
