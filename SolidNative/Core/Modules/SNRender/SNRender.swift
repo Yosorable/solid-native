@@ -170,6 +170,23 @@ class SNRender: SolidNativeModule {
             }
             node.webViewController.webView.loadHTMLString(html, baseURL: url)
         }
+        
+        builder.addSyncFunction("_webView_evaluateJavaScript") { (_ id: String, _ code: String, _ callback: JSValue) in
+            guard let webView = (self.viewManager.createdViewRegistry[id] as? SNWebView)?.webViewController.webView else { return }
+            if callback.isUndefined || callback.isNull {
+                webView.evaluateJavaScript(code, completionHandler: nil)
+            } else {
+                webView.evaluateJavaScript(code, completionHandler: { (res, err) in
+                    if let res = res {
+                        callback.call(withArguments: [res, NSNull() as Any])
+                    } else if let err = err?.localizedDescription {
+                        callback.call(withArguments: [NSNull() as Any, err as Any])
+                    } else {
+                        callback.call(withArguments: [NSNull() as Any])
+                    }
+                })
+            }
+        }
 
         return builder.value
     }
