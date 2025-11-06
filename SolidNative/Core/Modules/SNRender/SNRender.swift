@@ -77,7 +77,7 @@ class SNRender: SolidNativeModule {
 
         
         builder.addSyncFunction("getRootView") {
-            return SolidNativeCore.shared.rootElement.id.uuidString
+            return self.solidNativeCore.rootElement.id.uuidString
         }
         
         builder.addSyncFunction("getFirstChild") { (_ id: String) in
@@ -155,7 +155,7 @@ class SNRender: SolidNativeModule {
                 let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 url = baseURL.appending(path: urlString)
             }
-            node.webViewController.load(URLRequest(url: url))
+            node.webViewController.webView.load(URLRequest(url: url))
         }
         
         builder.addSyncFunction("_webView_loadHTMLString") { (_ id: JSValue, html: JSValue, baseURLString: JSValue) in
@@ -168,7 +168,7 @@ class SNRender: SolidNativeModule {
                 let baseURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 url = baseURL.appending(path: urlString).standardized
             }
-            node.webViewController.loadHTMLString(html, baseURL: url)
+            node.webViewController.webView.loadHTMLString(html, baseURL: url)
         }
 
         return builder.value

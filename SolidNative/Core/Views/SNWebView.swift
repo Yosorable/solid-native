@@ -22,15 +22,6 @@ class SNWebView: SolidNativeView {
             self.props = props
             self.owner = owner
             self.webViewController = webViewController
-
-            if let url = props.getStringOrNil(name: "url"), let u = URL(string: url) {
-                self.webViewController.load(URLRequest(url: u))
-            } else if let file = props.getStringOrNil(name: "file"), let base = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let target = base.appending(path: file)
-                self.webViewController.load(URLRequest(url: target))
-            } else if let html = props.getStringOrNil(name: "html") {
-                self.webViewController.loadHTMLString(html, baseURL: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appending(component: "index.html"))
-            }
         }
         
         @State var isLoading = false

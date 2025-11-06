@@ -14,15 +14,11 @@ struct RootPageView: View {
     
     init() {
         // MARK: todo: 每次使用不同的viewManager, 这样延迟清除view也不会出现问题
-        if SolidNativeCore.shared == nil {
-            SolidNativeCore.shared = SolidNativeCore()
-            SolidNativeCore.shared.jsRuntime = JSRuntime()
-            SolidNativeCore.shared.renderer = SNRender(core: SolidNativeCore.shared, vm: ViewManager())
-        } else {
-            let newRoot = SNView()
-            SolidNativeCore.shared.rootElement = newRoot
-            SolidNativeCore.shared.renderer.viewManager.createdViewRegistry[newRoot.id.uuidString] = newRoot
-        }
+
+        SolidNativeCore.shared = SolidNativeCore()
+        SolidNativeCore.shared.jsRuntime = JSRuntime()
+        SolidNativeCore.shared.renderer = SNRender(core: SolidNativeCore.shared, vm: ViewManager())
+
         SolidNativeCore.shared.runApp()
     }
     
@@ -53,10 +49,11 @@ struct RootPageView: View {
                     let btn2 = Button {
                         dismiss()
                         SolidNativeCore.shared.jsContext.evaluateScript("cleanAllPages()")
-                        
+
                         // 还会触发渲染, 延迟回收节点
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            SolidNativeCore.shared.renderer.viewManager.clearAll()
+                        let renderer = SolidNativeCore.shared.renderer!
+                        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) {
+                            renderer.viewManager.clearAll()
                         }
                     } label: {
                         Image(systemName: "xmark")

@@ -10,7 +10,7 @@ import SwiftUI
 import WebKit
 
 class WebViewController: ObservableObject {
-    fileprivate var webView: WKWebView!
+    public var webView: WKWebView!
     @Published var isLoading: Bool = false
 
     init(webView: WKWebView? = nil) {
@@ -47,15 +47,15 @@ class WebViewController: ObservableObject {
         print("--- WebViewController deinit")
     }
 
-    @discardableResult
-    func load(_ request: URLRequest) -> WKNavigation? {
-        return webView.load(request)
-    }
-
-    @discardableResult
-    func loadHTMLString(_ html: String, baseURL: URL?) -> WKNavigation? {
-        return webView.loadHTMLString(html, baseURL: baseURL)
-    }
+//    @discardableResult
+//    func load(_ request: URLRequest) -> WKNavigation? {
+//        return webView.load(request)
+//    }
+//
+//    @discardableResult
+//    func loadHTMLString(_ html: String, baseURL: URL?) -> WKNavigation? {
+//        return webView.loadHTMLString(html, baseURL: baseURL)
+//    }
 
     func updateLoadingState(isLoading: Bool) {
         self.isLoading = isLoading
