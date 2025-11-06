@@ -11,46 +11,28 @@ import SwiftUI
 struct RootPageView: View {
     @Environment(\.dismiss) var dismiss
     @Namespace private var namespace
+    let core: SolidNativeCore
+    let root: SolidNativeView
 
     init() {
-        SolidNativeCore.shared = SolidNativeCore()
-        SolidNativeCore.shared.jsRuntime = JSRuntime()
-        SolidNativeCore.shared.renderer = SNRender(
-            core: SolidNativeCore.shared,
-            vm: ViewManager()
-        )
-
-        SolidNativeCore.shared.runApp()
+        core = SolidNativeCore()
+        core.runApp()
+        if core.getRootView().children.count == 1 {
+            root = core.getRootView().children[0]
+        } else {
+            root = core.getRootView()
+        }
     }
 
     var body: some View {
         ZStack {
-            if SolidNativeCore.shared.rootElement.children.count == 1 {
-                SolidNativeCore.shared.rootElement.children.first?.render()
-            } else {
-                SolidNativeCore.shared.rootElement.render()
-            }
+            root.render()
+    
             VStack {
                 HStack {
                     Spacer()
                     let btn1 = Button {
-                        let rootId = SolidNativeCore.shared.rootElement.id
-                            .uuidString
-                        for (k, v) in SolidNativeCore.shared.renderer
-                            .viewManager.createdViewRegistry
-                        {
-                            let address = Unmanaged.passUnretained(v).toOpaque()
-                            let retainCount = CFGetRetainCount(v as CFTypeRef)
-                            print(
-                                "id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootId ? "[root]" : "")"
-                            )
-                        }
-                        withUnsafePointer(
-                            to: &SolidNativeCore.shared.renderer.viewManager
-                                .createdViewRegistry
-                        ) { pointer in
-                            print("字典内存地址: \(pointer)")
-                        }
+                        core.renderer.viewManager.debugPrint()
                     } label: {
                         Image(systemName: "desktopcomputer")
                             .font(.system(size: 23)).frame(
@@ -60,16 +42,15 @@ struct RootPageView: View {
                     }
                     let btn2 = Button {
                         dismiss()
-                        SolidNativeCore.shared.jsContext.evaluateScript(
+                        core.jsContext.evaluateScript(
                             "cleanAllPages()"
                         )
 
                         // 还会触发渲染, 延迟回收节点
-                        let renderer = SolidNativeCore.shared.renderer!
                         DispatchQueue.global(qos: .background).asyncAfter(
                             deadline: .now() + 1
                         ) {
-                            renderer.viewManager.clearAll()
+                            self.core.renderer.viewManager.clearAll()
                         }
                     } label: {
                         Image(systemName: "xmark")

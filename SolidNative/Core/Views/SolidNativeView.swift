@@ -12,6 +12,7 @@ import SwiftUI
 class SolidNativeView: Hashable {
     weak var next: SolidNativeView?
     weak var prev: SolidNativeView?
+    var vm: ViewManager!
     let id = UUID()
 
     static func == (lhs: SolidNativeView, rhs: SolidNativeView) -> Bool {
@@ -23,7 +24,7 @@ class SolidNativeView: Hashable {
     }
 
     class var name: String {
-        "sn_view"
+        "sn_native_view"
     }
 
     required init() {
@@ -34,20 +35,16 @@ class SolidNativeView: Hashable {
     }
 
     deinit {
-        //        if ["sn_tabview", "sn_navigationstack"].contains(Self.name) {
         print("\(id) \(Self.name) deinit")
-        //        }
     }
 
     let props: SolidNativeProps = SolidNativeProps()
 
     @objc public func setProp(_ name: String, _ value: JSValue?) {
-        // print("JS value type: " + String(value!.isString))
         assert(
             name != "children",
             "Err: User `removeChild` or `insertBefore` to update children!"
         )
-        //        props.values[name] = value
         if self.props.values.updateValue(value, forKey: name) == nil {
             self.props.keys.append(name)
         }

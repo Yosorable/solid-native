@@ -1,19 +1,20 @@
 //
-//  SNAsyncImage.swift
+//  SNWebImage.swift
 //  SolidNative
 //
-//  Created by LZY on 2024/5/3.
+//  Created by LZY on 2024/5/12.
 //
 
 import Foundation
+import SDWebImageSwiftUI
 import SwiftUI
 
-class SNAsyncImage: SolidNativeView {
+class SNWebImage: SolidNativeView {
     class override var name: String {
-        "sn_async_image"
+        "sn_webimage"
     }
 
-    struct SNAsyncImage: View {
+    struct SNWebImage: View {
         @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
 
@@ -30,7 +31,7 @@ class SNAsyncImage: SolidNativeView {
                 let id = placeholder?.forProperty("id").toString()
             {
                 res = AnyView(
-                    AsyncImage(
+                    WebImage(
                         url: URL(string: src),
                         content: { image in
                             var res: AnyView
@@ -63,14 +64,16 @@ class SNAsyncImage: SolidNativeView {
 
                         },
                         placeholder: {
-                            SolidNativeCore.shared.renderer.viewManager
-                                .getViewById(id).render()
+                            if let node = owner?.vm.getViewById(id) {
+                                let _ = owner?.indirectChildren.append(node)
+                                node.render()
+                            }
                         }
                     )
                 )
             } else {
                 res = AnyView(
-                    AsyncImage(
+                    WebImage(
                         url: URL(string: src),
                         content: { image in
                             var res: AnyView
@@ -117,7 +120,6 @@ class SNAsyncImage: SolidNativeView {
     }
 
     override func render() -> AnyView {
-        AnyView(SNAsyncImage(props: self.props, owner: self))
+        AnyView(SNWebImage(props: self.props, owner: self))
     }
-
 }

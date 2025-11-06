@@ -120,14 +120,14 @@ struct SolidNativeViewModifiers: ViewModifier {
                         jsValue?.hasProperty("id") ?? false,
                         let id = jsValue?.forProperty("id").toString()
                     {
-                        let node = SolidNativeCore.shared.renderer.viewManager
-                            .getViewById(id)
-                        owner?.indirectChildren.append(node)
-                        view = AnyView(
-                            view.background {
-                                node.render()
-                            }
-                        )
+                        if let node = owner?.vm.getViewById(id) {
+                            owner?.indirectChildren.append(node)
+                            view = AnyView(
+                                view.background {
+                                    node.render()
+                                }
+                            )
+                        }
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.background(color))
                     }
@@ -135,14 +135,14 @@ struct SolidNativeViewModifiers: ViewModifier {
                     if jsValue?.isObject == true,
                         let id = jsValue?.forProperty("id").toString()
                     {
-                        let node = SolidNativeCore.shared.renderer.viewManager
-                            .getViewById(id)
-                        owner?.indirectChildren.append(node)
-                        view = AnyView(
-                            view.overlay {
-                                node.render()
-                            }
-                        )
+                        if let node = owner?.vm.getViewById(id) {
+                            owner?.indirectChildren.append(node)
+                            view = AnyView(
+                                view.overlay {
+                                    node.render()
+                                }
+                            )
+                        }
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.overlay(color))
                     }
@@ -1176,7 +1176,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                     let addSAFunc = { (_ v: AnyView, _ cfg: JSValue) in
                         guard
                             let contentId = cfg.forProperty("content")
-                                .forProperty("id").toString()
+                                .forProperty("id").toString(), let node = owner?.vm.getViewById(contentId)
                         else {
                             return v
                         }
@@ -1196,8 +1196,6 @@ struct SolidNativeViewModifiers: ViewModifier {
                                 edge = .trailing
                             }
                         }
-                        let node = SolidNativeCore.shared.renderer.viewManager
-                            .getViewById(contentId)
                         owner?.indirectChildren.append(node)
                         return AnyView(
                             v.swipeActions(
@@ -1261,14 +1259,6 @@ func convertRGBAToHexString(
         alphaInt
     )
 }
-
-//func convertProcessedColorToUIColor(from value: Any?) -> UIColor {
-//  do {
-//    return try UIColor.convert(from: value, appContext: AppContext())
-//  } catch _  {
-//    return UIColor.black
-//  }
-//}
 
 func getColorFromHex(_ hex: String) -> Color? {
     var str = hex
@@ -1374,19 +1364,9 @@ func getColor(_ color: Any?) -> Color {
             }
 
             return .clear
-        //      if #available(iOS 15.0, *) {
-        //        return Color(uiColor: convertProcessedColorToUIColor(from: color))
-        //      } else {
-        //        return .clear
-        //      }
         }
     }
     return .clear
-    //  if #available(iOS 15.0, *) {
-    //    return Color(uiColor: convertProcessedColorToUIColor(from: color))
-    //  } else {
-    //    return .clear
-    //  }
 }
 
 func getColors(_ colors: [Any]?) -> [Color] {

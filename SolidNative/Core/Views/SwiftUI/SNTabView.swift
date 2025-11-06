@@ -12,16 +12,18 @@ import SwiftUI
 struct SNTabChild: View {
     var content: JSValue?
     var id: String?
-    init(content: JSValue?, onAddTab: (String) -> Void) {
+    var node: SolidNativeView?
+    init(content: JSValue?, onAddTab: (String) -> Void, vm: ViewManager?) {
         self.content = content
         id = content?.call(withArguments: []).forProperty("id")!.toString()
-        if let id = id {
+        if let id = id, let vm = vm {
             onAddTab(id)
+            node = vm.getViewById(id)
         }
     }
     var body: some View {
-        if let id = id {
-            SolidNativeCore.shared.renderer.viewManager.getViewById(id).render()
+        if let node = node {
+            node.render()
         }
     }
 }
@@ -54,15 +56,16 @@ class SNTabView: SolidNativeView {
                                 content: tabs?.atIndex(idx).forProperty(
                                     "content"
                                 ),
-                                onAddTab: onAddTab
+                                onAddTab: onAddTab,
+                                vm: owner?.vm
                             )
                         }
                     ).tabItem {
                         if let id = tabs?.atIndex(idx).forProperty("tabItem")
-                            .forProperty("id").toString()
+                            .forProperty("id").toString(),
+                            let v = owner?.vm.getViewById(id)
                         {
-                            let v = SolidNativeCore.shared.renderer.viewManager
-                                .getViewById(id)
+
                             let _ = owner?.indirectChildren.append(v)
                             v.render()
                         }

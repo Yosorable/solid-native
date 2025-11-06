@@ -19,7 +19,6 @@
 		48484D882BE4617A0024AE4E /* ECMASwift in Frameworks */ = {isa = PBXBuildFile; productRef = 48484D872BE4617A0024AE4E /* ECMASwift */; };
 		48484D8D2BE461C40024AE4E /* SNRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D8C2BE461C40024AE4E /* SNRender.swift */; };
 		48484D8F2BE461F30024AE4E /* JSValueBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D8E2BE461F30024AE4E /* JSValueBuilder.swift */; };
-		48484D912BE4620B0024AE4E /* SolidNativeModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D902BE4620B0024AE4E /* SolidNativeModule.swift */; };
 		48484D932BE462430024AE4E /* SolidNativeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D922BE462430024AE4E /* SolidNativeCore.swift */; };
 		48484D972BE462A00024AE4E /* SolidNativeProps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D962BE462A00024AE4E /* SolidNativeProps.swift */; };
 		48484D992BE462BC0024AE4E /* SolidNativeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D982BE462BC0024AE4E /* SolidNativeView.swift */; };
@@ -28,7 +27,6 @@
 		48484D9F2BE463020024AE4E /* SNView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484D9E2BE463020024AE4E /* SNView.swift */; };
 		48484DA12BE46AB20024AE4E /* SNScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DA02BE46AB20024AE4E /* SNScrollView.swift */; };
 		48484DA32BE4704F0024AE4E /* SNToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DA22BE4704F0024AE4E /* SNToggle.swift */; };
-		48484DAD2BE4A0F90024AE4E /* SNAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DAC2BE4A0F90024AE4E /* SNAsyncImage.swift */; };
 		48484DAF2BE4AED60024AE4E /* SNStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DAE2BE4AED60024AE4E /* SNStack.swift */; };
 		48484DB12BE4C10C0024AE4E /* SNSpacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DB02BE4C10C0024AE4E /* SNSpacer.swift */; };
 		48484DB32BE4C3800024AE4E /* SNSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DB22BE4C3800024AE4E /* SNSlider.swift */; };
@@ -36,8 +34,9 @@
 		48484DBC2BE4FE0C0024AE4E /* SNTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DBB2BE4FE0C0024AE4E /* SNTextField.swift */; };
 		484CB0652BF341DB008D5448 /* SNLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484CB0642BF341DB008D5448 /* SNLabel.swift */; };
 		48622C8F2BF29E6600C4AA62 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 48622C8E2BF29E6600C4AA62 /* SQLite */; };
-		48682C3C2BF1CA9E00471ED7 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3B2BF1CA9E00471ED7 /* utils.swift */; };
+		48682C3C2BF1CA9E00471ED7 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3B2BF1CA9E00471ED7 /* UIKit.swift */; };
 		48682C3E2BF1CD7900471ED7 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3D2BF1CD7900471ED7 /* LazyView.swift */; };
+		4869FCBC2EBCDB42004A57BB /* ViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4869FCBB2EBCDB3D004A57BB /* ViewManager.swift */; };
 		4876BC4D2BE5C65200909088 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4876BC4C2BE5C65200909088 /* PageView.swift */; };
 		4876BC4F2BE5E85F00909088 /* SNSecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4876BC4E2BE5E85F00909088 /* SNSecureField.swift */; };
 		4876BC532BE5F0C100909088 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4876BC522BE5F0C100909088 /* ZoomableScrollView.swift */; };
@@ -76,7 +75,6 @@
 		48484D7F2BE4614C0024AE4E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		48484D8C2BE461C40024AE4E /* SNRender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNRender.swift; sourceTree = "<group>"; };
 		48484D8E2BE461F30024AE4E /* JSValueBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSValueBuilder.swift; sourceTree = "<group>"; };
-		48484D902BE4620B0024AE4E /* SolidNativeModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidNativeModule.swift; sourceTree = "<group>"; };
 		48484D922BE462430024AE4E /* SolidNativeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidNativeCore.swift; sourceTree = "<group>"; };
 		48484D962BE462A00024AE4E /* SolidNativeProps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidNativeProps.swift; sourceTree = "<group>"; };
 		48484D982BE462BC0024AE4E /* SolidNativeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidNativeView.swift; sourceTree = "<group>"; };
@@ -85,15 +83,15 @@
 		48484D9E2BE463020024AE4E /* SNView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNView.swift; sourceTree = "<group>"; };
 		48484DA02BE46AB20024AE4E /* SNScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNScrollView.swift; sourceTree = "<group>"; };
 		48484DA22BE4704F0024AE4E /* SNToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNToggle.swift; sourceTree = "<group>"; };
-		48484DAC2BE4A0F90024AE4E /* SNAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNAsyncImage.swift; sourceTree = "<group>"; };
 		48484DAE2BE4AED60024AE4E /* SNStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNStack.swift; sourceTree = "<group>"; };
 		48484DB02BE4C10C0024AE4E /* SNSpacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSpacer.swift; sourceTree = "<group>"; };
 		48484DB22BE4C3800024AE4E /* SNSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSlider.swift; sourceTree = "<group>"; };
 		48484DB52BE4CA2C0024AE4E /* View+Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Modifiers.swift"; sourceTree = "<group>"; };
 		48484DBB2BE4FE0C0024AE4E /* SNTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNTextField.swift; sourceTree = "<group>"; };
 		484CB0642BF341DB008D5448 /* SNLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNLabel.swift; sourceTree = "<group>"; };
-		48682C3B2BF1CA9E00471ED7 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
+		48682C3B2BF1CA9E00471ED7 /* UIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		48682C3D2BF1CD7900471ED7 /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
+		4869FCBB2EBCDB3D004A57BB /* ViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewManager.swift; sourceTree = "<group>"; };
 		4876BC4C2BE5C65200909088 /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		4876BC4E2BE5E85F00909088 /* SNSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSecureField.swift; sourceTree = "<group>"; };
 		4876BC522BE5F0C100909088 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
@@ -140,6 +138,7 @@
 		48484D772BE4614A0024AE4E /* SolidNative */ = {
 			isa = PBXGroup;
 			children = (
+				4869FCB82EBCD760004A57BB /* Utils */,
 				4876BC512BE5F0AC00909088 /* Components */,
 				48484D892BE461930024AE4E /* Core */,
 				48484D782BE4614A0024AE4E /* SolidNativeApp.swift */,
@@ -172,31 +171,41 @@
 		48484D8A2BE461A60024AE4E /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				48484D8B2BE461B00024AE4E /* SNRender */,
-				48484D8E2BE461F30024AE4E /* JSValueBuilder.swift */,
-				48484D902BE4620B0024AE4E /* SolidNativeModule.swift */,
-			);
-			path = Modules;
-			sourceTree = "<group>";
-		};
-		48484D8B2BE461B00024AE4E /* SNRender */ = {
-			isa = PBXGroup;
-			children = (
 				48484D8C2BE461C40024AE4E /* SNRender.swift */,
 			);
-			path = SNRender;
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		48484D942BE462740024AE4E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				48484D952BE462860024AE4E /* Base */,
+				4869FCBA2EBCDAE7004A57BB /* SwiftUI */,
+				4869FCBB2EBCDB3D004A57BB /* ViewManager.swift */,
+				48484D962BE462A00024AE4E /* SolidNativeProps.swift */,
+				48484D982BE462BC0024AE4E /* SolidNativeView.swift */,
+				48484DB52BE4CA2C0024AE4E /* View+Modifiers.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4869FCB82EBCD760004A57BB /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				48484D8E2BE461F30024AE4E /* JSValueBuilder.swift */,
+				48682C3B2BF1CA9E00471ED7 /* UIKit.swift */,
+				48B0E4FB2BE649D7008507AB /* Utils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		4869FCBA2EBCDAE7004A57BB /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
 				48484D9A2BE462D70024AE4E /* SNButtonView.swift */,
 				48484D9C2BE462EC0024AE4E /* SNTextView.swift */,
 				48484D9E2BE463020024AE4E /* SNView.swift */,
 				48484DA02BE46AB20024AE4E /* SNScrollView.swift */,
 				48484DA22BE4704F0024AE4E /* SNToggle.swift */,
-				48484DAC2BE4A0F90024AE4E /* SNAsyncImage.swift */,
 				48484DAE2BE4AED60024AE4E /* SNStack.swift */,
 				48484DB02BE4C10C0024AE4E /* SNSpacer.swift */,
 				48484DB22BE4C3800024AE4E /* SNSlider.swift */,
@@ -212,25 +221,13 @@
 				481F59A32EB9BAF5004B8B73 /* SNNavigationLink.swift */,
 				483FC1352EBB3644004C182E /* SNWebView.swift */,
 			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		48484D952BE462860024AE4E /* Base */ = {
-			isa = PBXGroup;
-			children = (
-				48484D962BE462A00024AE4E /* SolidNativeProps.swift */,
-				48484D982BE462BC0024AE4E /* SolidNativeView.swift */,
-				48484DB52BE4CA2C0024AE4E /* View+Modifiers.swift */,
-				48B0E4FB2BE649D7008507AB /* Utils.swift */,
-			);
-			path = Base;
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		4876BC512BE5F0AC00909088 /* Components */ = {
 			isa = PBXGroup;
 			children = (
 				4876BC522BE5F0C100909088 /* ZoomableScrollView.swift */,
-				48682C3B2BF1CA9E00471ED7 /* utils.swift */,
 				48682C3D2BF1CD7900471ED7 /* LazyView.swift */,
 				48E140672EBB94EF00CF0A00 /* MWebView.swift */,
 			);
@@ -327,14 +324,13 @@
 				48484DB62BE4CA2C0024AE4E /* View+Modifiers.swift in Sources */,
 				48B398E02EB878C000471E0E /* SNNavigationStack.swift in Sources */,
 				48B0E4FC2BE649D7008507AB /* Utils.swift in Sources */,
-				48484D912BE4620B0024AE4E /* SolidNativeModule.swift in Sources */,
 				48484DB32BE4C3800024AE4E /* SNSlider.swift in Sources */,
-				48682C3C2BF1CA9E00471ED7 /* utils.swift in Sources */,
+				48682C3C2BF1CA9E00471ED7 /* UIKit.swift in Sources */,
 				484CB0652BF341DB008D5448 /* SNLabel.swift in Sources */,
 				481F59A42EB9BAFC004B8B73 /* SNNavigationLink.swift in Sources */,
 				4834BE122BF060C100F17D84 /* SNList.swift in Sources */,
+				4869FCBC2EBCDB42004A57BB /* ViewManager.swift in Sources */,
 				48B0E4FE2BE65272008507AB /* SNRectangle.swift in Sources */,
-				48484DAD2BE4A0F90024AE4E /* SNAsyncImage.swift in Sources */,
 				48484D972BE462A00024AE4E /* SolidNativeProps.swift in Sources */,
 				48484D932BE462430024AE4E /* SolidNativeCore.swift in Sources */,
 				4834BE102BF0585400F17D84 /* SNWebImage.swift in Sources */,

@@ -80,7 +80,7 @@ struct ContentView: View {
                     Text("light").tag(1)
                     Text("dark").tag(2)
                 }.onChange(of: colorSchemeNum) {
-                    readOrWriteIntegerFromFile(write: $1)
+                    _ = readOrWriteIntegerFromFile(write: $1)
                 }
                 
                 Button {

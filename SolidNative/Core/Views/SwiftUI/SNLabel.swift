@@ -14,7 +14,6 @@ class SNLabel: SolidNativeView {
     }
 
     struct SNLabel: View {
-
         @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
 

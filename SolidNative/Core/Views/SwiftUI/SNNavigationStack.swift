@@ -66,9 +66,7 @@ class SNNavigationStack: SolidNativeView {
 
             // 先cleanup
             toDelIds.forEach { id in
-                let node = SolidNativeCore.shared.renderer.viewManager
-                    .getViewById(id)
-                SolidNativeCore.shared.jsContext.evaluateScript(
+                owner?.vm.jsContext.evaluateScript(
                     "cleanPage(\"\(id)\")"
                 )
             }
@@ -76,10 +74,10 @@ class SNNavigationStack: SolidNativeView {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 toDelIds.forEach { id in
                     // MARK: danger
-                    let node = SolidNativeCore.shared.renderer.viewManager
-                        .getViewById(id)
-                    SolidNativeCore.shared.renderer.viewManager
-                        .removePageByRoot(node)
+                    if let vm = owner?.vm {
+                        let node = vm.getViewById(id)
+                        vm.removePageByRoot(node)
+                    }
                 }
             }
         }
@@ -123,9 +121,8 @@ class SNNavigationStack: SolidNativeView {
                     self.path = newPath
                 }
                 .navigationDestination(for: NavigationRouteParam.self) { item in
-                    if item.id != "" {
-                        let node = SolidNativeCore.shared.renderer.viewManager
-                            .getViewById(item.id)
+                    if item.id != "", let vm = owner?.vm {
+                        let node = vm.getViewById(item.id)
 
                         if node.children.count == 1 {
                             node.firstChild?.render()

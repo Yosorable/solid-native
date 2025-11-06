@@ -15,12 +15,18 @@ import JavaScriptCore
 class SolidNativeCore {
     static var shared: SolidNativeCore!
 
-    var jsRuntime = JSRuntime()
+    let jsRuntime: JSRuntime
     var jsContext: JSContext {
         return jsRuntime.context
     }
 
-    var renderer: SNRender!
+    let renderer: SNRender
+    
+    init() {
+        let jsRuntime = JSRuntime()
+        self.jsRuntime = jsRuntime
+        self.renderer = SNRender(vm: ViewManager(jsContext: jsRuntime.context))
+    }
 
     deinit {
         print("[SolidNativeCore] deinit")
@@ -30,15 +36,16 @@ class SolidNativeCore {
     private func injectModuleIntoContext() {
         guard !done else { return }
         done = true
-        let r = renderer.getJSValueRepresentation()
+        let r = renderer.getJSValueRepresentation(jsContext: jsContext)
         jsContext.setObject(
             r,
             forKeyedSubscript: "SolidNativeRenderer" as NSString
         )
     }
-
-    var rootElement = SNView()
-    var navigationStack: [SNView] = []
+    
+    func getRootView() -> SNView {
+        return renderer.viewManager.rootElement
+    }
 
     static let bundlePath = FileManager.default.urls(
         for: .documentDirectory,
