@@ -43,8 +43,8 @@ class SolidNativeCore {
         )
     }
     
-    func getRootView() -> SNView {
-        return renderer.viewManager.rootElement
+    func getRootView() -> SolidNativeView {
+        return renderer.viewManager.getRoot()
     }
 
     static let bundlePath = FileManager.default.urls(

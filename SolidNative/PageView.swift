@@ -42,16 +42,7 @@ struct RootPageView: View {
                     }
                     let btn2 = Button {
                         dismiss()
-                        core.jsContext.evaluateScript(
-                            "cleanAllPages()"
-                        )
-
-                        // 还会触发渲染, 延迟回收节点
-                        DispatchQueue.global(qos: .background).asyncAfter(
-                            deadline: .now() + 1
-                        ) {
-                            self.core.renderer.viewManager.clearAll()
-                        }
+                        self.core.renderer.viewManager.clearAll()
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 23)).frame(

@@ -64,19 +64,11 @@ class SNNavigationStack: SolidNativeView {
 
             let toDelIds = toRelease.filter { $0.value }.map { $0.key }
 
-            // 先cleanup
             toDelIds.forEach { id in
                 owner.vm.jsContext.evaluateScript(
                     "cleanPage(\"\(id)\")"
                 )
-            }
-            // 还会触发渲染, 延迟回收节点
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                toDelIds.forEach { id in
-                    // MARK: danger
-                    let node = owner.vm.getViewById(id)
-                    owner.vm.removePageByRoot(node)
-                }
+                owner.vm.removePageByRoot(id)
             }
         }
 

@@ -32,7 +32,7 @@ class SNRender {
         }
 
         builder.addSyncFunction("getRootView") { [weak self] in
-            return self?.viewManager.rootElement.id.uuidString ?? ""
+            return self?.viewManager.rootID
         }
 
         builder.addSyncFunction("getFirstChild") { [weak self] (_ id: String) in
@@ -57,7 +57,7 @@ class SNRender {
 
         builder.addSyncFunction("isTextElement") { [weak self] (_ id: String) in
             let view = self?.viewManager.getViewById(id)
-            return view?.isTextElement ?? false
+            return view?.isTextElement
         }
 
         builder.addSyncFunction("removeChild") { [weak self]

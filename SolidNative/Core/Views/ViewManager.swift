@@ -46,16 +46,24 @@ class ViewManager {
 
     private var createdViewRegistry: [String: SolidNativeView] = [:]
     let jsContext: JSContext
-    let rootElement: SNView
+    //    let rootElement: SNView
+    let rootID: String
 
     init(jsContext: JSContext) {
         self.jsContext = jsContext
-        self.rootElement = SNView()
-        self.addViewToRegistry(view: self.rootElement)
+        //        self.rootElement = SNView()
+        //        self.addViewToRegistry(view: self.rootElement)
+        let root = SNView()
+        rootID = root.id.uuidString
+        self.addViewToRegistry(view: root)
     }
 
     deinit {
         print("[ViewManager] deinit")
+    }
+
+    func getRoot() -> SolidNativeView {
+        return self.getViewById(rootID)
     }
 
     @discardableResult
@@ -88,88 +96,56 @@ class ViewManager {
         return SolidNativeView()
     }
 
-    func removeViewById(_ id: String) {
-        let node = createdViewRegistry.removeValue(forKey: id)
-        deactivateAllChildren(root: node)
-    }
-
-    private func deactivateAllChildren(root: SolidNativeView?) {
-        guard let root = root else { return }
-
-        if let r = createdViewRegistry.removeValue(forKey: root.id.uuidString) {
+    private func deactivateAllChildren(_ node: SolidNativeView) {
+        if let r = createdViewRegistry.removeValue(forKey: node.id.uuidString) {
             let address = Unmanaged.passUnretained(r).toOpaque()
             print(
                 "id: \(r.id.uuidString), name: \(r.getName()), address: \(address)"
             )
         }
 
-        let v = root
-
-        if let nv = v as? SNTabView {
+        if let nv = node as? SNTabView {
             nv.tabIds.forEach {
                 print("tab id: \($0)")
-                // MARK: todo: cleanAllPages时多次清除了
                 jsContext.evaluateScript(
                     "cleanPage(\"\($0)\")"
                 )
                 if let c = createdViewRegistry[$0] {
-                    deactivateAllChildren(root: c)
+                    deactivateAllChildren(c)
                 }
             }
         }
 
-        // 递归遍历所有子节点
-        for child in root.children {
-            deactivateAllChildren(root: child)
+        for child in node.children {
+            deactivateAllChildren(child)
         }
 
-        // 非直接子节点（属性中的）
-        for child in root.indirectChildren {
-            deactivateAllChildren(root: child)
+        for child in node.indirectChildren {
+            deactivateAllChildren(child)
         }
 
-        // 如果有 next 节点，继续设置
-        if let nextNode = root.next {
-            deactivateAllChildren(root: nextNode)
+        if let nextNode = node.next {
+            deactivateAllChildren(nextNode)
         }
     }
 
-    func removePageById(_ id: String) {
-        if let v = self.createdViewRegistry[id] {
-            self.deactivateAllChildren(root: v)
+    func removeViewById(_ id: String) {
+        if let node = createdViewRegistry.removeValue(forKey: id) {
+            deactivateAllChildren(node)
         }
     }
 
-    func removePageByRoot(_ root: SolidNativeView) {
-        self.deactivateAllChildren(root: root)
+    func removePageByRoot(_ id: String) {
+        if let root = createdViewRegistry[id] {
+            self.deactivateAllChildren(root)
+        }
     }
 
     func clearAll() {
-        createdViewRegistry.forEach { key, val in
-            val.next = nil
-            val.prev = nil
-            val.parentElement = nil
-            val.firstChild = nil
-            val.indirectChildren.removeAll()
-            val.children.removeAll()
-            val.props.children.removeAll()
-            val.props.values.removeAll()
-            val.vm = nil
-        }
-        createdViewRegistry = [:]
-        
-        let val = rootElement
-        val.next = nil
-        val.prev = nil
-        val.parentElement = nil
-        val.firstChild = nil
-        val.indirectChildren.removeAll()
-        val.children.removeAll()
-        val.props.values.removeAll()
-        val.props.children.removeAll()
-        val.vm = nil
-        
-        print("---------- clean end")
+        jsContext.evaluateScript(
+            "cleanAllPages()"
+        )
+        createdViewRegistry.removeAll()
     }
 
     func debugPrint() {
@@ -178,7 +154,7 @@ class ViewManager {
                 let address = Unmanaged.passUnretained(v).toOpaque()
                 let retainCount = CFGetRetainCount(v as CFTypeRef)
                 print(
-                    "id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootElement.id.uuidString ? "[root]" : "")"
+                    "id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootID ? "[root]" : "")"
                 )
             }
         #endif
