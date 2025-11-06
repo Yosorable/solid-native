@@ -15,7 +15,7 @@ class SNVStack: SolidNativeView {
 
     struct SNVStack: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()
@@ -56,7 +56,7 @@ class SNHStack: SolidNativeView {
     struct SNHStack: View {
         @ObservedObject var props: SolidNativeProps
         //        let parentNodeID: String
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()
@@ -96,7 +96,7 @@ class SNZStack: SolidNativeView {
 
     struct SNZStack: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()
@@ -130,7 +130,7 @@ class SNLazyVStack: SolidNativeView {
 
     struct SNLazyVStack: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()
@@ -170,7 +170,7 @@ class SNLazyHStack: SolidNativeView {
 
     struct SNLazyHStack: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()

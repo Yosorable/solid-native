@@ -15,7 +15,7 @@ class SNToggle: SolidNativeView {
 
     struct SNToggle: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
         @State var tmpVal = false
 
         var body: some View {

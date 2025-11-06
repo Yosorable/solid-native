@@ -15,7 +15,7 @@ class SNSlider: SolidNativeView {
 
     struct SNSlider: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
         @State var tmpVal: Double = 0
 
         func onEditingChanged(editing: Bool) {

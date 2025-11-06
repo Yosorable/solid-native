@@ -42,7 +42,7 @@ class SNTabView: SolidNativeView {
     struct SNTabView: View {
         @ObservedObject var props: SolidNativeProps
         let onAddTab: (String) -> Void
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let tabs = props.getPropAsJSValue(name: "tabs")
@@ -57,16 +57,15 @@ class SNTabView: SolidNativeView {
                                     "content"
                                 ),
                                 onAddTab: onAddTab,
-                                vm: owner?.vm
+                                vm: owner.vm
                             )
                         }
                     ).tabItem {
                         if let id = tabs?.atIndex(idx).forProperty("tabItem")
-                            .forProperty("id").toString(),
-                            let v = owner?.vm.getViewById(id)
+                            .forProperty("id").toString()
                         {
-
-                            let _ = owner?.indirectChildren.append(v)
+                            let v = owner.vm.getViewById(id)
+                            let _ = owner.indirectChildren.append(v)
                             v.render()
                         }
                     }

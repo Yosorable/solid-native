@@ -15,7 +15,7 @@ class SNSecureField: SolidNativeView {
 
     struct SNSecureField: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let placeholder = props.getString(name: "placeholder")

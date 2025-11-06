@@ -15,7 +15,7 @@ class SNView: SolidNativeView {
 
     struct _SNView: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let children = props.getChildren()

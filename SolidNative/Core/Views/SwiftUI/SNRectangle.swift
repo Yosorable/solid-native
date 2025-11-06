@@ -15,7 +15,7 @@ class SNRectangle: SolidNativeView {
 
     struct SNRectangle: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let fill = getColor(props.getString(name: "fill", default: ""))

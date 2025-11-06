@@ -13,7 +13,7 @@ extension View {
     func solidNativeViewModifiers(
         mods: [[String: JSValue?]],
         keys: [String],
-        owner: SolidNativeView? = nil
+        owner: SolidNativeView
     ) -> some View {
         modifier(
             SolidNativeViewModifiers(
@@ -27,7 +27,7 @@ extension View {
 struct SolidNativeViewModifiers: ViewModifier {
     var mods: [[String: JSValue?]]
     var keys: [String]
-    weak var owner: SolidNativeView?
+    let owner: SolidNativeView
 
     func body(content: Content) -> some View {
         var view = AnyView(content)
@@ -120,14 +120,14 @@ struct SolidNativeViewModifiers: ViewModifier {
                         jsValue?.hasProperty("id") ?? false,
                         let id = jsValue?.forProperty("id").toString()
                     {
-                        if let node = owner?.vm.getViewById(id) {
-                            owner?.indirectChildren.append(node)
-                            view = AnyView(
-                                view.background {
-                                    node.render()
-                                }
-                            )
-                        }
+                        let node = owner.vm.getViewById(id)
+                        owner.indirectChildren.append(node)
+                        view = AnyView(
+                            view.background {
+                                node.render()
+                            }
+                        )
+
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.background(color))
                     }
@@ -135,14 +135,14 @@ struct SolidNativeViewModifiers: ViewModifier {
                     if jsValue?.isObject == true,
                         let id = jsValue?.forProperty("id").toString()
                     {
-                        if let node = owner?.vm.getViewById(id) {
-                            owner?.indirectChildren.append(node)
-                            view = AnyView(
-                                view.overlay {
-                                    node.render()
-                                }
-                            )
-                        }
+                        let node = owner.vm.getViewById(id)
+                        owner.indirectChildren.append(node)
+                        view = AnyView(
+                            view.overlay {
+                                node.render()
+                            }
+                        )
+
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.overlay(color))
                     }
@@ -1176,7 +1176,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                     let addSAFunc = { (_ v: AnyView, _ cfg: JSValue) in
                         guard
                             let contentId = cfg.forProperty("content")
-                                .forProperty("id").toString(), let node = owner?.vm.getViewById(contentId)
+                                .forProperty("id").toString()
                         else {
                             return v
                         }
@@ -1196,7 +1196,8 @@ struct SolidNativeViewModifiers: ViewModifier {
                                 edge = .trailing
                             }
                         }
-                        owner?.indirectChildren.append(node)
+                        let node = owner.vm.getViewById(contentId)
+                        owner.indirectChildren.append(node)
                         return AnyView(
                             v.swipeActions(
                                 edge: edge,

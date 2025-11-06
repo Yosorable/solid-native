@@ -15,7 +15,7 @@ class SNLabel: SolidNativeView {
 
     struct SNLabel: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let title = props.getString(name: "title")

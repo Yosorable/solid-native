@@ -15,12 +15,12 @@ class SNWebView: SolidNativeView {
 
     struct SNWebView: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
         @ObservedObject var webViewController: WebViewController
 
         init(
             props: SolidNativeProps,
-            owner: SolidNativeView? = nil,
+            owner: SolidNativeView,
             webViewController: WebViewController
         ) {
             self.props = props

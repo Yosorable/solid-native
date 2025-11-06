@@ -15,7 +15,7 @@ class SNSpacer: SolidNativeView {
 
     struct SNSpacer: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
 
         var body: some View {
             let minLength = props.getNumber(name: "minLenght", default: -1)

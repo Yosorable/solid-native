@@ -20,7 +20,7 @@ class SNNavigationStack: SolidNativeView {
 
     struct SNNavigationStack: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
         @State var path: [NavigationRouteParam]
 
         init(props: SolidNativeProps, owner: SolidNativeView) {
@@ -66,7 +66,7 @@ class SNNavigationStack: SolidNativeView {
 
             // 先cleanup
             toDelIds.forEach { id in
-                owner?.vm.jsContext.evaluateScript(
+                owner.vm.jsContext.evaluateScript(
                     "cleanPage(\"\(id)\")"
                 )
             }
@@ -74,10 +74,8 @@ class SNNavigationStack: SolidNativeView {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 toDelIds.forEach { id in
                     // MARK: danger
-                    if let vm = owner?.vm {
-                        let node = vm.getViewById(id)
-                        vm.removePageByRoot(node)
-                    }
+                    let node = owner.vm.getViewById(id)
+                    owner.vm.removePageByRoot(node)
                 }
             }
         }
@@ -121,8 +119,8 @@ class SNNavigationStack: SolidNativeView {
                     self.path = newPath
                 }
                 .navigationDestination(for: NavigationRouteParam.self) { item in
-                    if item.id != "", let vm = owner?.vm {
-                        let node = vm.getViewById(item.id)
+                    if item.id != "" {
+                        let node = owner.vm.getViewById(item.id)
 
                         if node.children.count == 1 {
                             node.firstChild?.render()

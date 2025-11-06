@@ -14,7 +14,7 @@ class SNNavigationLink: SolidNativeView {
 
     struct SNNavigationLink: View {
         @ObservedObject var props: SolidNativeProps
-        weak var owner: SolidNativeView?
+        let owner: SolidNativeView
         var vm: ViewManager
 
         var body: some View {
@@ -22,7 +22,7 @@ class SNNavigationLink: SolidNativeView {
                 dest.isObject, dest.hasProperty("id"),
                 let id = dest.forProperty("id").toString()
             {
-                let _ = owner?.indirectChildren.append(
+                let _ = owner.indirectChildren.append(
                     vm.getViewById(id)
                 )
                 NavigationLink(
