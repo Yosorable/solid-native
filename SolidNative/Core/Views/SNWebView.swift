@@ -39,7 +39,7 @@ class SNWebView: SolidNativeView {
             MWebView(webViewController: webViewController)
                 .ignoresSafeArea(.all)
                 .onChange(of: webViewController.isLoading) { _, val in
-                    guard let fn = props.getPropAsJSValue(name: "onLoadingChange"), fn.isObject else { return }
+                    guard let fn = props.getPropAsJSValue(name: "onLoadingChanged"), fn.isObject else { return }
                     fn.call(withArguments: [val])
                 }
                 .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
