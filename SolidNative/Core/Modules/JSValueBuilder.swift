@@ -8,23 +8,23 @@
 import Foundation
 import JavaScriptCore
 
-
 class JSValueBuilder {
     let value: JSValue
     let jsCtx: JSContext
-    
+
     init(core: SolidNativeCore) {
         self.jsCtx = core.jsContext
         value = JSValue(newObjectIn: jsCtx)!
         print("[JSValueBuilder] init")
     }
-    
+
     deinit {
         print("[JSValueBuilder] deinit")
     }
-    
+
     // Helper function to process JSValue to Swift type
-    private func processValue<T>(_ jsValue: JSValue, asType type: T.Type) -> T? {
+    private func processValue<T>(_ jsValue: JSValue, asType type: T.Type) -> T?
+    {
         if type == JSValue.self {
             return jsValue as? T
         }
@@ -39,17 +39,17 @@ class JSValueBuilder {
             return value as? T
         }
     }
-    
+
     // No arguments
     func addSyncFunction<U>(_ name: String, fn: @escaping () -> U?) {
         let objcFunc: @convention(block) (JSValue) -> JSValue? = { jsValue in
             let result = fn()
             return JSValue(object: result, in: self.jsCtx)
-            
+
         }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
     }
-    
+
     // Single argument
     func addSyncFunction<T, U>(_ name: String, fn: @escaping (T) -> U?) {
         let objcFunc: @convention(block) (JSValue) -> JSValue? = { jsValue in
@@ -64,15 +64,18 @@ class JSValueBuilder {
         }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
     }
-    
+
     // Two arguments
     func addSyncFunction<T, U, V>(_ name: String, fn: @escaping (T, U) -> V?) {
-        let objcFunc: @convention(block) (JSValue, JSValue) -> JSValue? = { jsValue1, jsValue2 in
+        let objcFunc: @convention(block) (JSValue, JSValue) -> JSValue? = {
+            jsValue1,
+            jsValue2 in
             guard let arg1 = self.processValue(jsValue1, asType: T.self),
-                  let arg2 = self.processValue(jsValue2, asType: U.self) else {
+                let arg2 = self.processValue(jsValue2, asType: U.self)
+            else {
                 return nil
             }
-            
+
             if let result = fn(arg1, arg2) {
                 return JSValue(object: result, in: self.jsCtx)
             }
@@ -80,42 +83,57 @@ class JSValueBuilder {
         }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
     }
-    
+
     // Three arguments
-    func addSyncFunction<T, U, V, W>(_ name: String, fn: @escaping (T, U, V) -> W?) {
-        let objcFunc: @convention(block) (JSValue, JSValue, JSValue) -> JSValue? = { jsValue1, jsValue2, jsValue3 in
-            guard let arg1 = self.processValue(jsValue1, asType: T.self),
-                  let arg2 = self.processValue(jsValue2, asType: U.self),
-                  let arg3 = self.processValue(jsValue3, asType: V.self) else {
+    func addSyncFunction<T, U, V, W>(
+        _ name: String,
+        fn: @escaping (T, U, V) -> W?
+    ) {
+        let objcFunc:
+            @convention(block) (JSValue, JSValue, JSValue) -> JSValue? = {
+                jsValue1,
+                jsValue2,
+                jsValue3 in
+                guard let arg1 = self.processValue(jsValue1, asType: T.self),
+                    let arg2 = self.processValue(jsValue2, asType: U.self),
+                    let arg3 = self.processValue(jsValue3, asType: V.self)
+                else {
+                    return nil
+                }
+
+                if let result = fn(arg1, arg2, arg3) {
+                    return JSValue(object: result, in: self.jsCtx)
+                }
                 return nil
             }
-            
-            if let result = fn(arg1, arg2, arg3) {
-                return JSValue(object: result, in: self.jsCtx)
-            }
-            return nil
-        }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
     }
-    
+
     // Four arguments
-    func addSyncFunction<T, U, V, W, X>(_ name: String, fn: @escaping (T, U, V, W) -> X?) {
-        let objcFunc: @convention(block) (JSValue, JSValue, JSValue, JSValue) -> JSValue? = { jsValue1, jsValue2, jsValue3, jsValue4 in
-            guard let arg1 = self.processValue(jsValue1, asType: T.self),
-                  let arg2 = self.processValue(jsValue2, asType: U.self),
-                  let arg3 = self.processValue(jsValue3, asType: V.self),
-                  let arg4 = self.processValue(jsValue4, asType: W.self) else {
-                return nil
-            }
-            
-            if let result = fn(arg1, arg2, arg3, arg4) {
-                return JSValue(object: result, in: self.jsCtx)
-            }
-            return nil
-        }
+    func addSyncFunction<T, U, V, W, X>(
+        _ name: String,
+        fn: @escaping (T, U, V, W) -> X?
+    ) {
+        let objcFunc:
+            @convention(block) (JSValue, JSValue, JSValue, JSValue) -> JSValue? =
+                { jsValue1, jsValue2, jsValue3, jsValue4 in
+                    guard
+                        let arg1 = self.processValue(jsValue1, asType: T.self),
+                        let arg2 = self.processValue(jsValue2, asType: U.self),
+                        let arg3 = self.processValue(jsValue3, asType: V.self),
+                        let arg4 = self.processValue(jsValue4, asType: W.self)
+                    else {
+                        return nil
+                    }
+
+                    if let result = fn(arg1, arg2, arg3, arg4) {
+                        return JSValue(object: result, in: self.jsCtx)
+                    }
+                    return nil
+                }
         value.setObject(objcFunc, forKeyedSubscript: name as NSString)
     }
-    
+
     func addProperty(_ name: String, prop: Any) {
         value.setObject(prop, forKeyedSubscript: name as NSString)
     }

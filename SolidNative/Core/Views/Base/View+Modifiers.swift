@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import JavaScriptCore
+import SwiftUI
 
 extension View {
     func solidNativeViewModifiers(
@@ -28,8 +28,7 @@ struct SolidNativeViewModifiers: ViewModifier {
     var mods: [[String: JSValue?]]
     var keys: [String]
     weak var owner: SolidNativeView?
-    
-    
+
     func body(content: Content) -> some View {
         var view = AnyView(content)
         for mod in mods {
@@ -37,14 +36,14 @@ struct SolidNativeViewModifiers: ViewModifier {
             for key in keys {
                 let jsValue = mod[key] as? JSValue
                 guard let value = jsValue?.toObject() else { continue }
-                switch(key) {
+                switch key {
                 case "padding":
                     if value is Bool {
                         view = AnyView(view.padding())
                     } else if let padding = value as? CGFloat {
                         view = AnyView(view.padding(padding))
                     } else if let padding = value as? [String: CGFloat] {
-                        
+
                         let top: CGFloat = padding["top"] ?? 0
                         let leading: CGFloat = padding["leading"] ?? 0
                         let bottom: CGFloat = padding["bottom"] ?? 0
@@ -52,37 +51,42 @@ struct SolidNativeViewModifiers: ViewModifier {
                         let horizontal: CGFloat = padding["horizontal"] ?? 0
                         let vertical: CGFloat = padding["vertical"] ?? 0
                         let all: CGFloat = padding["all"] ?? 0
-                        
+
                         let edgeInsets = EdgeInsets(
-                            top: all != 0 ? all : vertical != 0 ? vertical : top,
-                            leading: all != 0 ? all : horizontal != 0 ? horizontal : leading,
-                            bottom: all != 0 ? all : vertical != 0 ? vertical : bottom,
-                            trailing: all != 0 ? all : horizontal != 0 ? horizontal : trailing
+                            top: all != 0
+                                ? all : vertical != 0 ? vertical : top,
+                            leading: all != 0
+                                ? all : horizontal != 0 ? horizontal : leading,
+                            bottom: all != 0
+                                ? all : vertical != 0 ? vertical : bottom,
+                            trailing: all != 0
+                                ? all : horizontal != 0 ? horizontal : trailing
                         )
-                        
+
                         view = AnyView(view.padding(edgeInsets))
-                        
+
                     }
                 case "border":
                     if let border = value as? [String: Any] {
-                        let color = getColor(border["color"]) as Color? ?? Color.black
+                        let color =
+                            getColor(border["color"]) as Color? ?? Color.black
                         let width = border["width"] as? CGFloat ?? 1.0
                         view = AnyView(view.border(color, width: width))
                     }
-                    
+
                 case "tag":
                     if let tag = value as? Int {
                         view = AnyView(view.tag(tag))
                     } else if let tag = value as? String {
                         view = AnyView(view.tag(tag))
                     }
-                    
+
                 case "foregroundStyle":
                     if let color = getColor(value) as Color? {
                         if #available(iOS 15.0, *) {
                             view = AnyView(view.foregroundStyle(color))
                         } else {
-                            
+
                         }
                     } else if let color = value as? [Any] {
                         let colors = getColors(color) as [Color]
@@ -93,42 +97,65 @@ struct SolidNativeViewModifiers: ViewModifier {
                             }
                         case 2:
                             if #available(iOS 15.0, *) {
-                                view = AnyView(view.foregroundStyle(colors[0], colors[1]))
+                                view = AnyView(
+                                    view.foregroundStyle(colors[0], colors[1])
+                                )
                             }
                         case 3:
                             if #available(iOS 15.0, *) {
-                                view = AnyView(view.foregroundStyle(colors[0], colors[1], colors[2]))
+                                view = AnyView(
+                                    view.foregroundStyle(
+                                        colors[0],
+                                        colors[1],
+                                        colors[2]
+                                    )
+                                )
                             }
                         default:
                             break
                         }
                     }
                 case "background":
-                    if jsValue?.isObject == true, jsValue?.hasProperty("id") ?? false, let id = jsValue?.forProperty("id").toString() {
-                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
+                    if jsValue?.isObject == true,
+                        jsValue?.hasProperty("id") ?? false,
+                        let id = jsValue?.forProperty("id").toString()
+                    {
+                        let node = SolidNativeCore.shared.renderer.viewManager
+                            .getViewById(id)
                         owner?.indirectChildren.append(node)
-                        view = AnyView(view.background {
-                            node.render()
-                        })
+                        view = AnyView(
+                            view.background {
+                                node.render()
+                            }
+                        )
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.background(color))
                     }
                 case "overlay":
-                    if jsValue?.isObject == true, let id = jsValue?.forProperty("id").toString() {
-                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(id)
+                    if jsValue?.isObject == true,
+                        let id = jsValue?.forProperty("id").toString()
+                    {
+                        let node = SolidNativeCore.shared.renderer.viewManager
+                            .getViewById(id)
                         owner?.indirectChildren.append(node)
-                        view = AnyView(view.overlay {
-                            node.render()
-                        })
+                        view = AnyView(
+                            view.overlay {
+                                node.render()
+                            }
+                        )
                     } else if let color = getColor(value) as Color? {
                         view = AnyView(view.overlay(color))
                     }
                 case "rotationEffect":
                     if let rotation = value as? [String: CGFloat] {
                         if let degrees = rotation["degrees"] {
-                            view = AnyView(view.rotationEffect(.degrees(Double(degrees))))
+                            view = AnyView(
+                                view.rotationEffect(.degrees(Double(degrees)))
+                            )
                         } else if let radians = rotation["radians"] {
-                            view = AnyView(view.rotationEffect(.radians(Double(radians))))
+                            view = AnyView(
+                                view.rotationEffect(.radians(Double(radians)))
+                            )
                         }
                     }
                 case "scaleEffect":
@@ -137,11 +164,19 @@ struct SolidNativeViewModifiers: ViewModifier {
                     }
                 case "shadow":
                     if let shadow = value as? [String: Any] {
-                        let color = getColor(shadow["color"]) as Color? ?? Color.black
+                        let color =
+                            getColor(shadow["color"]) as Color? ?? Color.black
                         let radius = shadow["radius"] as? CGFloat ?? 1.0
                         let x = shadow["x"] as? CGFloat ?? 0.0
                         let y = shadow["y"] as? CGFloat ?? 0.0
-                        view = AnyView(view.shadow(color: color, radius: radius, x: x, y: y))
+                        view = AnyView(
+                            view.shadow(
+                                color: color,
+                                radius: radius,
+                                x: x,
+                                y: y
+                            )
+                        )
                     }
                 case "opacity":
                     if let opacity = value as? CGFloat {
@@ -226,13 +261,24 @@ struct SolidNativeViewModifiers: ViewModifier {
                     if let frame = value as? [String: Any] {
                         let width = anyToCGFloat(frame["width"])
                         let height = anyToCGFloat(frame["height"])
-                        let alignment = anyToAlignment(frame["alignment"]) ?? .center
+                        let alignment =
+                            anyToAlignment(frame["alignment"]) ?? .center
                         if let w = width, let h = height {
-                            view = AnyView(view.frame(width: w, height: h, alignment: alignment))
+                            view = AnyView(
+                                view.frame(
+                                    width: w,
+                                    height: h,
+                                    alignment: alignment
+                                )
+                            )
                         } else if let w = width {
-                            view = AnyView(view.frame(width: w, alignment: alignment))
+                            view = AnyView(
+                                view.frame(width: w, alignment: alignment)
+                            )
                         } else if let h = height {
-                            view = AnyView(view.frame(height: h, alignment: alignment))
+                            view = AnyView(
+                                view.frame(height: h, alignment: alignment)
+                            )
                         } else {
                             let minWidth = anyToCGFloat(frame["minWidth"])
                             let idealWidth = anyToCGFloat(frame["idealWidth"])
@@ -240,36 +286,52 @@ struct SolidNativeViewModifiers: ViewModifier {
                             let minHeight = anyToCGFloat(frame["minHeight"])
                             let idealHeight = anyToCGFloat(frame["idealHeight"])
                             let maxHeight = anyToCGFloat(frame["maxHeight"])
-                            
-                            view = AnyView(view.frame(minWidth: minWidth, idealWidth: idealWidth, maxWidth: maxWidth, minHeight: minHeight, idealHeight: idealHeight, maxHeight: maxHeight, alignment: alignment))
+
+                            view = AnyView(
+                                view.frame(
+                                    minWidth: minWidth,
+                                    idealWidth: idealWidth,
+                                    maxWidth: maxWidth,
+                                    minHeight: minHeight,
+                                    idealHeight: idealHeight,
+                                    maxHeight: maxHeight,
+                                    alignment: alignment
+                                )
+                            )
                         }
                     }
                 case "zIndex":
                     if let zIndex = value as? Double {
                         view = AnyView(view.zIndex(zIndex))
                     }
-                    
+
                 case "labelIsHidden":
                     if let isHidden = value as? Bool, isHidden == true {
                         view = AnyView(view.labelsHidden())
                     }
-                    // Currently only supports text mask
+                // Currently only supports text mask
                 case "mask":
                     if let mask = value as? String {
                         if #available(iOS 15.0, *) {
-                            view = AnyView(view.mask({
-                                Text(mask)
-                            }))
+                            view = AnyView(
+                                view.mask({
+                                    Text(mask)
+                                })
+                            )
                         }
                     }
-                    // Currently only supports direct mapping to shapes
+                // Currently only supports direct mapping to shapes
                 case "clipShape":
                     if let clipShape = value as? String {
                         switch clipShape {
                         case "circle":
                             view = AnyView(view.clipShape(Circle()))
                         case "roundedRectangle":
-                            view = AnyView(view.clipShape(RoundedRectangle(cornerRadius: 10)))
+                            view = AnyView(
+                                view.clipShape(
+                                    RoundedRectangle(cornerRadius: 10)
+                                )
+                            )
                         case "capsule":
                             view = AnyView(view.clipShape(Capsule()))
                         case "ellipse":
@@ -285,8 +347,16 @@ struct SolidNativeViewModifiers: ViewModifier {
                             case "circle":
                                 view = AnyView(view.clipShape(Circle()))
                             case "roundedRectangle":
-                                if let cornerRadius = clipShape["cornerRadius"] as? CGFloat {
-                                    view = AnyView(view.clipShape(RoundedRectangle(cornerRadius: cornerRadius)))
+                                if let cornerRadius = clipShape["cornerRadius"]
+                                    as? CGFloat
+                                {
+                                    view = AnyView(
+                                        view.clipShape(
+                                            RoundedRectangle(
+                                                cornerRadius: cornerRadius
+                                            )
+                                        )
+                                    )
                                 }
                             case "capsule":
                                 view = AnyView(view.clipShape(Capsule()))
@@ -308,9 +378,19 @@ struct SolidNativeViewModifiers: ViewModifier {
                                     if #available(iOS 15.0, *) {
                                         switch colorScheme {
                                         case "light":
-                                            view = AnyView(view.environment(\.colorScheme, .light))
+                                            view = AnyView(
+                                                view.environment(
+                                                    \.colorScheme,
+                                                    .light
+                                                )
+                                            )
                                         case "dark":
-                                            view = AnyView(view.environment(\.colorScheme, .dark))
+                                            view = AnyView(
+                                                view.environment(
+                                                    \.colorScheme,
+                                                    .dark
+                                                )
+                                            )
                                         default:
                                             break
                                         }
@@ -326,13 +406,21 @@ struct SolidNativeViewModifiers: ViewModifier {
                         if #available(iOS 15.0, *) {
                             switch renderingMode {
                             case "monochrome":
-                                view = AnyView(view.symbolRenderingMode(.monochrome))
+                                view = AnyView(
+                                    view.symbolRenderingMode(.monochrome)
+                                )
                             case "hierarchical":
-                                view = AnyView(view.symbolRenderingMode(.hierarchical))
+                                view = AnyView(
+                                    view.symbolRenderingMode(.hierarchical)
+                                )
                             case "multicolor":
-                                view = AnyView(view.symbolRenderingMode(.multicolor))
+                                view = AnyView(
+                                    view.symbolRenderingMode(.multicolor)
+                                )
                             case "palette":
-                                view = AnyView(view.symbolRenderingMode(.palette))
+                                view = AnyView(
+                                    view.symbolRenderingMode(.palette)
+                                )
                             default:
                                 break
                             }
@@ -351,15 +439,15 @@ struct SolidNativeViewModifiers: ViewModifier {
                             break
                         }
                     }
-                    
+
                 case "fontSize":
                     if let fontSize = value as? CGFloat {
                         view = AnyView(view.font(.system(size: fontSize)))
                     }
-                    
+
                 case "fontWeight":
                     if let fontWeight = value as? String {
-                        if #available(iOS 16.0, *)  {
+                        if #available(iOS 16.0, *) {
                             switch fontWeight {
                             case "ultralight":
                                 view = AnyView(view.fontWeight(.ultraLight))
@@ -384,7 +472,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                             }
                         }
                     }
-                    
+
                 case "font":
                     if let font = value as? String {
                         switch font {
@@ -420,31 +508,33 @@ struct SolidNativeViewModifiers: ViewModifier {
                             break
                         }
                     }
-                    
+
                 case "bold":
                     if let bold = value as? Bool {
                         if #available(iOS 16.0, *) {
                             view = AnyView(view.bold(bold))
                         }
                     }
-                    
+
                 case "italic":
                     if let italic = value as? Bool {
                         if #available(iOS 16.0, *) {
                             view = AnyView(view.italic(italic))
                         }
                     }
-                    
+
                 case "strikethrough":
                     if #available(iOS 16.0, *) {
                         if let isActive = value as? Bool {
                             print(isActive)
                             view = AnyView(view.strikethrough(isActive))
                         } else if let strikethrough = value as? [String: Any] {
-                            let isActive = strikethrough["isActive"] as? Bool ?? false
-                            let color = getColor(strikethrough["color"]) as Color?
+                            let isActive =
+                                strikethrough["isActive"] as? Bool ?? false
+                            let color =
+                                getColor(strikethrough["color"]) as Color?
                             let pattern = strikethrough["pattern"] as? String
-                            
+
                             let patternStyle: Text.LineStyle.Pattern
                             switch pattern {
                             case "solid":
@@ -460,19 +550,27 @@ struct SolidNativeViewModifiers: ViewModifier {
                             default:
                                 patternStyle = .solid
                             }
-                            view = AnyView(view.strikethrough(isActive, pattern: patternStyle, color: color))
+                            view = AnyView(
+                                view.strikethrough(
+                                    isActive,
+                                    pattern: patternStyle,
+                                    color: color
+                                )
+                            )
                         }
                     }
-                    
+
                 case "underline":
                     if #available(iOS 16.0, *) {
                         if let isActive = value as? Bool {
                             view = AnyView(view.underline(isActive))
                         } else if let strikethrough = value as? [String: Any] {
-                            let isActive = strikethrough["isActive"] as? Bool ?? false
-                            let color = getColor(strikethrough["color"]) as Color?
+                            let isActive =
+                                strikethrough["isActive"] as? Bool ?? false
+                            let color =
+                                getColor(strikethrough["color"]) as Color?
                             let pattern = strikethrough["pattern"] as? String
-                            
+
                             let patternStyle: Text.LineStyle.Pattern
                             switch pattern {
                             case "solid":
@@ -488,10 +586,16 @@ struct SolidNativeViewModifiers: ViewModifier {
                             default:
                                 patternStyle = .solid
                             }
-                            view = AnyView(view.underline(isActive, pattern: patternStyle, color: color))
+                            view = AnyView(
+                                view.underline(
+                                    isActive,
+                                    pattern: patternStyle,
+                                    color: color
+                                )
+                            )
                         }
                     }
-                    
+
                 case "lineLimit":
                     view = AnyView(view.lineLimit(value as? Int))
                 case "truncationMode":
@@ -512,12 +616,12 @@ struct SolidNativeViewModifiers: ViewModifier {
                             view = AnyView(view.accentColor(color))
                         }
                     }
-                    
+
                 case "cornerRadius":
                     if let cornerRadius = value as? CGFloat {
                         view = AnyView(view.cornerRadius(cornerRadius))
                     }
-                    
+
                 case "buttonStyle":
                     if let buttonStyle = value as? String {
                         switch buttonStyle {
@@ -529,7 +633,9 @@ struct SolidNativeViewModifiers: ViewModifier {
                             }
                         case "borderedProminent":
                             if #available(iOS 15.0, *) {
-                                view = AnyView(view.buttonStyle(.borderedProminent))
+                                view = AnyView(
+                                    view.buttonStyle(.borderedProminent)
+                                )
                             }
                         case "plain":
                             view = AnyView(view.buttonStyle(.plain))
@@ -537,14 +643,16 @@ struct SolidNativeViewModifiers: ViewModifier {
                             break
                         }
                     }
-                    
+
                 case "presentationCornerRadius":
                     if let cornerRadius = value as? CGFloat {
                         if #available(iOS 16.4, *) {
-                            view = AnyView(view.presentationCornerRadius(cornerRadius))
+                            view = AnyView(
+                                view.presentationCornerRadius(cornerRadius)
+                            )
                         }
                     }
-                    
+
                 case "presentationDetents":
                     if let presentationDetents = value as? [Any] {
                         if #available(iOS 16.0, *) {
@@ -559,10 +667,15 @@ struct SolidNativeViewModifiers: ViewModifier {
                                     default:
                                         break
                                     }
-                                } else if let detent = detent as? [String: Any] {
-                                    if let fraction = detent["fraction"] as? CGFloat {
+                                } else if let detent = detent as? [String: Any]
+                                {
+                                    if let fraction = detent["fraction"]
+                                        as? CGFloat
+                                    {
                                         detents.insert(.fraction(fraction))
-                                    } else if let height = detent["height"] as? CGFloat {
+                                    } else if let height = detent["height"]
+                                        as? CGFloat
+                                    {
                                         detents.insert(.height(height))
                                     }
                                 }
@@ -570,42 +683,98 @@ struct SolidNativeViewModifiers: ViewModifier {
                             view = AnyView(view.presentationDetents(detents))
                         }
                     }
-                    
-                    
+
                 case "sensoryFeedback":
                     if let sensoryFeedback = value as? [String: Any],
-                       let feedback = sensoryFeedback["feedback"] as? String,
-                       let trigger = sensoryFeedback["trigger"] as? any Equatable {
+                        let feedback = sensoryFeedback["feedback"] as? String,
+                        let trigger = sensoryFeedback["trigger"]
+                            as? any Equatable
+                    {
                         if #available(iOS 17.0, *) {
                             switch feedback {
                             case "warning":
-                                view = AnyView(view.sensoryFeedback(.warning, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .warning,
+                                        trigger: trigger
+                                    )
+                                )
                             case "error":
-                                view = AnyView(view.sensoryFeedback(.error, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .error,
+                                        trigger: trigger
+                                    )
+                                )
                             case "success":
-                                view = AnyView(view.sensoryFeedback(.success, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .success,
+                                        trigger: trigger
+                                    )
+                                )
                             case "alignment":
-                                view = AnyView(view.sensoryFeedback(.alignment, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .alignment,
+                                        trigger: trigger
+                                    )
+                                )
                             case "decrease":
-                                view = AnyView(view.sensoryFeedback(.decrease, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .decrease,
+                                        trigger: trigger
+                                    )
+                                )
                             case "impact":
-                                view = AnyView(view.sensoryFeedback(.impact, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .impact,
+                                        trigger: trigger
+                                    )
+                                )
                             case "increase":
-                                view = AnyView(view.sensoryFeedback(.increase, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .increase,
+                                        trigger: trigger
+                                    )
+                                )
                             case "levelChange":
-                                view = AnyView(view.sensoryFeedback(.levelChange, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .levelChange,
+                                        trigger: trigger
+                                    )
+                                )
                             case "selection":
-                                view = AnyView(view.sensoryFeedback(.selection, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .selection,
+                                        trigger: trigger
+                                    )
+                                )
                             case "start":
-                                view = AnyView(view.sensoryFeedback(.start, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .start,
+                                        trigger: trigger
+                                    )
+                                )
                             case "stop":
-                                view = AnyView(view.sensoryFeedback(.stop, trigger: trigger))
+                                view = AnyView(
+                                    view.sensoryFeedback(
+                                        .stop,
+                                        trigger: trigger
+                                    )
+                                )
                             default:
                                 break
                             }
                         }
                     }
-                    
+
                 case "listStyle":
                     if let listStyle = value as? String {
                         switch listStyle {
@@ -627,24 +796,23 @@ struct SolidNativeViewModifiers: ViewModifier {
                             if #available(iOS 14.0, *) {
                                 view = AnyView(view.listStyle(.plain))
                             }
-                            
+
                         default:
                             break
                         }
                     }
-                    
-                    
-                    
+
                 case "scrollDisabled":
                     if let scrollDisabled = value as? Bool {
                         if scrollDisabled {
                             if #available(iOS 16.0, *) {
-                                view = AnyView(view.scrollDisabled(scrollDisabled))
+                                view = AnyView(
+                                    view.scrollDisabled(scrollDisabled)
+                                )
                             }
                         }
                     }
-                    
-                    
+
                 case "textFieldStyle":
                     if let textFieldStyle = value as? String {
                         switch textFieldStyle {
@@ -656,8 +824,7 @@ struct SolidNativeViewModifiers: ViewModifier {
                             break
                         }
                     }
-                    
-                    
+
                 case "pickerStyle":
                     if let pickerStyle = value as? String {
                         switch pickerStyle {
@@ -677,32 +844,40 @@ struct SolidNativeViewModifiers: ViewModifier {
                             break
                         }
                     }
-                    
+
                 case "position":
                     if let position = value as? [String: Any] {
-                        if let x = position["x"] as? CGFloat, let y = position["y"] as? CGFloat {
+                        if let x = position["x"] as? CGFloat,
+                            let y = position["y"] as? CGFloat
+                        {
                             view = AnyView(view.position(x: x, y: y))
                         }
                     }
-                    
+
                 case "offset":
                     if let offset = value as? [String: Any] {
-                        if let x = offset["x"] as? CGFloat, let y = offset["y"] as? CGFloat {
+                        if let x = offset["x"] as? CGFloat,
+                            let y = offset["y"] as? CGFloat
+                        {
                             view = AnyView(view.offset(x: x, y: y))
                         }
                     }
-                    
+
                 case "contentTransition":
                     if let transition = value as? String {
                         switch transition {
-                            // identity, interpolate, opacity, symbolEffect, numericText
+                        // identity, interpolate, opacity, symbolEffect, numericText
                         case "identity":
                             if #available(iOS 16.0, *) {
-                                view = AnyView(view.contentTransition(.identity))
+                                view = AnyView(
+                                    view.contentTransition(.identity)
+                                )
                             }
                         case "interpolate":
                             if #available(iOS 16.0, *) {
-                                view = AnyView(view.contentTransition(.interpolate))
+                                view = AnyView(
+                                    view.contentTransition(.interpolate)
+                                )
                             }
                         case "opacity":
                             if #available(iOS 16.0, *) {
@@ -710,165 +885,226 @@ struct SolidNativeViewModifiers: ViewModifier {
                             }
                         case "symbolEffect":
                             if #available(iOS 17.0, *) {
-                                view = AnyView(view.contentTransition(.symbolEffect))
+                                view = AnyView(
+                                    view.contentTransition(.symbolEffect)
+                                )
                             }
                         case "numericText":
                             if #available(iOS 16.0, *) {
-                                view = AnyView(view.contentTransition(.numericText(countsDown: false)))
+                                view = AnyView(
+                                    view.contentTransition(
+                                        .numericText(countsDown: false)
+                                    )
+                                )
                             }
                         default:
                             break
                         }
                     }
-                    
+
                 case "animation":
                     if let animation = value as? [String: Any] {
                         print("ani")
                         if let type = animation["type"] as? String {
-                            if let value = animation["value"] as? any Equatable {
+                            if let value = animation["value"] as? any Equatable
+                            {
                                 switch type {
                                 case "bouncy":
-                                    view = AnyView(view.animation(.bouncy, value: value))
+                                    view = AnyView(
+                                        view.animation(.bouncy, value: value)
+                                    )
                                 case "easeIn":
-                                    view = AnyView(view.animation(.easeIn, value: value))
+                                    view = AnyView(
+                                        view.animation(.easeIn, value: value)
+                                    )
                                 case "easeOut":
-                                    view = AnyView(view.animation(.easeOut, value: value))
+                                    view = AnyView(
+                                        view.animation(.easeOut, value: value)
+                                    )
                                 case "easeInOut":
-                                    view = AnyView(view.animation(.easeInOut, value: value))
+                                    view = AnyView(
+                                        view.animation(.easeInOut, value: value)
+                                    )
                                 case "linear":
-                                    view = AnyView(view.animation(.linear, value: value))
+                                    view = AnyView(
+                                        view.animation(.linear, value: value)
+                                    )
                                 case "spring":
-                                    view = AnyView(view.animation(.spring, value: value))
+                                    view = AnyView(
+                                        view.animation(.spring, value: value)
+                                    )
                                 case "smooth":
-                                    view = AnyView(view.animation(.smooth, value: value))
+                                    view = AnyView(
+                                        view.animation(.smooth, value: value)
+                                    )
                                 case "interactiveSpring":
-                                    view = AnyView(view.animation(.interactiveSpring, value: value))
+                                    view = AnyView(
+                                        view.animation(
+                                            .interactiveSpring,
+                                            value: value
+                                        )
+                                    )
                                 case "default":
-                                    view = AnyView(view.animation(.default, value: value))
+                                    view = AnyView(
+                                        view.animation(.default, value: value)
+                                    )
                                 default:
                                     break
                                 }
                             }
                         }
                     }
-                    
+
                 case "textContentType":
                     if let textContentType = value as? String {
                         if #available(iOS 15.0, *) {
-                            view = AnyView(view.textContentType(UITextContentType(rawValue: textContentType)))
+                            view = AnyView(
+                                view.textContentType(
+                                    UITextContentType(rawValue: textContentType)
+                                )
+                            )
                         }
                     }
-                    
+
                 case "keyboardType":
                     if let keyboardType = value as? String {
                         if #available(iOS 15.0, *) {
                             switch keyboardType {
                             case "numberPad":
                                 view = AnyView(view.keyboardType(.numberPad))
-                                
+
                             case "phonePad":
                                 view = AnyView(view.keyboardType(.phonePad))
-                                
+
                             case "namePhonePad":
                                 view = AnyView(view.keyboardType(.namePhonePad))
-                                
+
                             case "emailAddress":
                                 view = AnyView(view.keyboardType(.emailAddress))
-                                
+
                             case "decimalPad":
                                 view = AnyView(view.keyboardType(.decimalPad))
-                                
+
                             case "twitter":
                                 view = AnyView(view.keyboardType(.twitter))
-                                
+
                             case "webSearch":
                                 view = AnyView(view.keyboardType(.webSearch))
-                                
+
                             case "asciiCapableNumberPad":
-                                view = AnyView(view.keyboardType(.asciiCapableNumberPad))
-                                
+                                view = AnyView(
+                                    view.keyboardType(.asciiCapableNumberPad)
+                                )
+
                             case "asciiCapable":
                                 view = AnyView(view.keyboardType(.asciiCapable))
-                                
+
                             case "numbersAndPunctuation":
-                                view = AnyView(view.keyboardType(.numbersAndPunctuation))
-                                
+                                view = AnyView(
+                                    view.keyboardType(.numbersAndPunctuation)
+                                )
+
                             case "URL":
                                 view = AnyView(view.keyboardType(.URL))
-                                
+
                             case "default":
                                 view = AnyView(view.keyboardType(.default))
-                                
+
                             default:
                                 break
                             }
                         }
                     }
-                    
+
                 case "autocorrectionDisabled":
                     if let autocorrectionDisabled = value as? Bool {
                         if #available(iOS 15.0, *) {
-                            view = AnyView(view.autocorrectionDisabled(autocorrectionDisabled))
+                            view = AnyView(
+                                view.autocorrectionDisabled(
+                                    autocorrectionDisabled
+                                )
+                            )
                         }
                     }
-                    
+
                 case "textInputAutocapitalization":
                     if let autocapitalization = value as? String {
                         if #available(iOS 15.0, *) {
                             switch autocapitalization {
                             case "never":
-                                view = AnyView(view.textInputAutocapitalization(.never))
+                                view = AnyView(
+                                    view.textInputAutocapitalization(.never)
+                                )
                             case "words":
-                                view = AnyView(view.textInputAutocapitalization(.words))
+                                view = AnyView(
+                                    view.textInputAutocapitalization(.words)
+                                )
                             case "sentences":
-                                view = AnyView(view.textInputAutocapitalization(.sentences))
+                                view = AnyView(
+                                    view.textInputAutocapitalization(.sentences)
+                                )
                             case "characters":
-                                view = AnyView(view.textInputAutocapitalization(.characters))
+                                view = AnyView(
+                                    view.textInputAutocapitalization(
+                                        .characters
+                                    )
+                                )
                             default:
                                 break
                             }
                         }
                     }
-                    
-                    
+
                 case "onAppear":
-                    view = AnyView(view.onAppear {
-                        jsValue?.call(withArguments: [])
-                    })
-                    
+                    view = AnyView(
+                        view.onAppear {
+                            jsValue?.call(withArguments: [])
+                        }
+                    )
+
                 case "onDisappear":
-                    view = AnyView(view.onDisappear {
-                        jsValue?.call(withArguments: [])
-                    })
+                    view = AnyView(
+                        view.onDisappear {
+                            jsValue?.call(withArguments: [])
+                        }
+                    )
 
                 case "onTapGesture":
                     var perform: JSValue? = nil
                     var cnt: Int? = nil
-                    
+
                     if let jv = jsValue {
                         cnt = jv.forProperty("count").toObject() as? Int
                         perform = cnt == nil ? jv : jv.forProperty("perform")
-                        
+
                     }
                     if let cnt = cnt, let perform = perform {
-                        view = AnyView(view.onTapGesture(count: cnt) {
-                            perform.call(withArguments: [])
-                        })
+                        view = AnyView(
+                            view.onTapGesture(count: cnt) {
+                                perform.call(withArguments: [])
+                            }
+                        )
                     } else if let perform = jsValue {
-                        view = AnyView(view.onTapGesture {
-                            perform.call(withArguments: [])
-                        })
+                        view = AnyView(
+                            view.onTapGesture {
+                                perform.call(withArguments: [])
+                            }
+                        )
                     }
-                    
+
                 case "onLongPressGesture":
                     var perform: JSValue? = nil
                     var minimumDuration: Double? = nil
                     var maximumDistance: Double? = nil
                     var onPressingChanged: JSValue? = nil
-                    
+
                     if let jv = jsValue {
-                        minimumDuration = jv.forProperty("minimumDuration").toObject() as? Double
-                        maximumDistance = jv.forProperty("maximumDistance").toObject() as? Double
+                        minimumDuration =
+                            jv.forProperty("minimumDuration").toObject()
+                            as? Double
+                        maximumDistance =
+                            jv.forProperty("maximumDistance").toObject()
+                            as? Double
                         onPressingChanged = jv.forProperty("onPressingChanged")
                         perform = jv.forProperty("perform")
                         if perform?.isUndefined ?? true {
@@ -877,7 +1113,10 @@ struct SolidNativeViewModifiers: ViewModifier {
                         if onPressingChanged?.isUndefined ?? true {
                             onPressingChanged = nil
                         }
-                        if perform == nil && minimumDuration == nil && maximumDistance == nil && onPressingChanged == nil {
+                        if perform == nil && minimumDuration == nil
+                            && maximumDistance == nil
+                            && onPressingChanged == nil
+                        {
                             perform = jv
                         }
                     }
@@ -889,25 +1128,32 @@ struct SolidNativeViewModifiers: ViewModifier {
                                 perform: {
                                     perform.call(withArguments: [])
                                 },
-                                onPressingChanged: onPressingChanged == nil ? nil : { val in
-                                    onPressingChanged?.call(withArguments: [val])
-                                }
+                                onPressingChanged: onPressingChanged == nil
+                                    ? nil
+                                    : { val in
+                                        onPressingChanged?.call(withArguments: [
+                                            val
+                                        ])
+                                    }
                             )
                         )
                     }
-                    
+
                 case "dragGesture":
                     view = AnyView(
                         view.gesture(
                             DragGesture()
-                                .onChanged{val in
-                                    if jsValue?.hasProperty("onChanged") == true {
-                                        jsValue?.forProperty("onChanged").call(withArguments: [val.toDictionary()])
+                                .onChanged { val in
+                                    if jsValue?.hasProperty("onChanged") == true
+                                    {
+                                        jsValue?.forProperty("onChanged").call(
+                                            withArguments: [val.toDictionary()])
                                     }
                                 }
-                                .onEnded{val in
+                                .onEnded { val in
                                     if jsValue?.hasProperty("onEnded") == true {
-                                        jsValue?.forProperty("onEnded").call(withArguments: [val.toDictionary()])
+                                        jsValue?.forProperty("onEnded").call(
+                                            withArguments: [val.toDictionary()])
                                     }
                                 }
                         )
@@ -918,20 +1164,31 @@ struct SolidNativeViewModifiers: ViewModifier {
                     }
                 case "navigationBarTitleDisplayMode":
                     let md = value as? String
-                    view = AnyView(view.navigationBarTitleDisplayMode(md == "inline" ? .inline : (md == "large" ? .large : .automatic)))
-                    
+                    view = AnyView(
+                        view.navigationBarTitleDisplayMode(
+                            md == "inline"
+                                ? .inline
+                                : (md == "large" ? .large : .automatic)
+                        )
+                    )
+
                 case "swipeActions":
-                    let addSAFunc = {(_ v: AnyView, _ cfg: JSValue) in
-                        guard let contentId = cfg.forProperty("content").forProperty("id").toString() else {
+                    let addSAFunc = { (_ v: AnyView, _ cfg: JSValue) in
+                        guard
+                            let contentId = cfg.forProperty("content")
+                                .forProperty("id").toString()
+                        else {
                             return v
                         }
                         var allowsFullSwipe = true
                         var edge = HorizontalEdge.trailing
-                        
-                        if let afs = cfg.forProperty("allowsFullSwipe"), afs.isBoolean {
+
+                        if let afs = cfg.forProperty("allowsFullSwipe"),
+                            afs.isBoolean
+                        {
                             allowsFullSwipe = afs.toBool()
                         }
-                        
+
                         if let eg = cfg.forProperty("edge").toString() {
                             if eg == "leading" {
                                 edge = .leading
@@ -939,10 +1196,14 @@ struct SolidNativeViewModifiers: ViewModifier {
                                 edge = .trailing
                             }
                         }
-                        let node = SolidNativeCore.shared.renderer.viewManager.getViewById(contentId)
+                        let node = SolidNativeCore.shared.renderer.viewManager
+                            .getViewById(contentId)
                         owner?.indirectChildren.append(node)
                         return AnyView(
-                            v.swipeActions(edge: edge, allowsFullSwipe: allowsFullSwipe) {
+                            v.swipeActions(
+                                edge: edge,
+                                allowsFullSwipe: allowsFullSwipe
+                            ) {
                                 node.render()
                             }
                         )
@@ -955,27 +1216,26 @@ struct SolidNativeViewModifiers: ViewModifier {
                     } else if jsValue != nil {
                         view = addSAFunc(view, jsValue!)
                     }
-                    
-                    
-                    //        case "sheet":
-                    //          if let sheetModifier = value as? [String: Any] {
-                    //            if var isSheetPresented = sheetModifier["isPresented"] as? Bool {
-                    //              let isSheetPresentedBinding = Binding<Bool>(
-                    //                get: { isSheetPresented },
-                    //                set: { isSheetPresented = $0 }
-                    //              )
-                    //              view = AnyView(view.sheet(isPresented: isSheetPresentedBinding, onDismiss: {
-                    //                onEvent(["onSheetDismissed": true])
-                    //              }) {
-                    //                RepresentableView(view: sheetContent ?? UIView())
-                    //                  .frame(width: sheetContent?.frame.width, height: sheetContent?.frame.height)
-                    //              })
-                    //            }
-                    //          }
-                    
+
+                //        case "sheet":
+                //          if let sheetModifier = value as? [String: Any] {
+                //            if var isSheetPresented = sheetModifier["isPresented"] as? Bool {
+                //              let isSheetPresentedBinding = Binding<Bool>(
+                //                get: { isSheetPresented },
+                //                set: { isSheetPresented = $0 }
+                //              )
+                //              view = AnyView(view.sheet(isPresented: isSheetPresentedBinding, onDismiss: {
+                //                onEvent(["onSheetDismissed": true])
+                //              }) {
+                //                RepresentableView(view: sheetContent ?? UIView())
+                //                  .frame(width: sheetContent?.frame.width, height: sheetContent?.frame.height)
+                //              })
+                //            }
+                //          }
+
                 default:
                     break
-                    
+
                 }
             }
         }
@@ -983,13 +1243,23 @@ struct SolidNativeViewModifiers: ViewModifier {
     }
 }
 
-
-func convertRGBAToHexString(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> String {
+func convertRGBAToHexString(
+    red: CGFloat,
+    green: CGFloat,
+    blue: CGFloat,
+    alpha: CGFloat
+) -> String {
     let redInt = Int(red * 255)
     let greenInt = Int(green * 255)
     let blueInt = Int(blue * 255)
     let alphaInt = Int(alpha * 255)
-    return String(format: "#%02X%02X%02X%02X", redInt, greenInt, blueInt, alphaInt)
+    return String(
+        format: "#%02X%02X%02X%02X",
+        redInt,
+        greenInt,
+        blueInt,
+        alphaInt
+    )
 }
 
 //func convertProcessedColorToUIColor(from value: Any?) -> UIColor {
@@ -1006,9 +1276,16 @@ func getColorFromHex(_ hex: String) -> Color? {
         str.removeFirst()
     }
     if str.count == 3 {
-        str = String(repeating: str[str.startIndex], count: 2)
-        + String(repeating: str[str.index(str.startIndex, offsetBy: 1)], count: 2)
-        + String(repeating: str[str.index(str.startIndex, offsetBy: 2)], count: 2)
+        str =
+            String(repeating: str[str.startIndex], count: 2)
+            + String(
+                repeating: str[str.index(str.startIndex, offsetBy: 1)],
+                count: 2
+            )
+            + String(
+                repeating: str[str.index(str.startIndex, offsetBy: 2)],
+                count: 2
+            )
     } else if !str.count.isMultiple(of: 2) || str.count > 8 {
         return nil
     }
@@ -1028,10 +1305,10 @@ func getColorFromHex(_ hex: String) -> Color? {
         let blue = Double(Int(color) & 0x0000FF) / 255
         return Color(.sRGB, red: red, green: green, blue: blue, opacity: 1)
     } else if str.count == 8 {
-        let red = Double(Int(color >> 24) & 0x000000FF) / 255
-        let green = Double(Int(color >> 16) & 0x000000FF) / 255
-        let blue = Double(Int(color >> 8) & 0x000000FF) / 255
-        let alpha = Double(Int(color) & 0x000000FF) / 255
+        let red = Double(Int(color >> 24) & 0x0000_00FF) / 255
+        let green = Double(Int(color >> 16) & 0x0000_00FF) / 255
+        let blue = Double(Int(color >> 8) & 0x0000_00FF) / 255
+        let alpha = Double(Int(color) & 0x0000_00FF) / 255
         return Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
     } else {
         return nil
@@ -1085,23 +1362,23 @@ func getColor(_ color: Any?) -> Color {
             if #available(iOS 15.0, *) {
                 return .cyan
             }
-            
+
         case "indigo":
             if #available(iOS 15.0, *) {
                 return .indigo
             }
-            
+
         default:
             if color.hasPrefix("#") {
                 return getColorFromHex(color) ?? .clear
             }
-            
+
             return .clear
-            //      if #available(iOS 15.0, *) {
-            //        return Color(uiColor: convertProcessedColorToUIColor(from: color))
-            //      } else {
-            //        return .clear
-            //      }
+        //      if #available(iOS 15.0, *) {
+        //        return Color(uiColor: convertProcessedColorToUIColor(from: color))
+        //      } else {
+        //        return .clear
+        //      }
         }
     }
     return .clear
@@ -1111,7 +1388,6 @@ func getColor(_ color: Any?) -> Color {
     //    return .clear
     //  }
 }
-
 
 func getColors(_ colors: [Any]?) -> [Color] {
     var result: [Color] = []
@@ -1129,10 +1405,17 @@ extension DragGesture.Value {
             "time": time,
             "location": ["x": location.x, "y": location.y],
             "startLocation": ["x": startLocation.x, "y": startLocation.y],
-            "translation": ["width": translation.width, "height": translation.height],
+            "translation": [
+                "width": translation.width, "height": translation.height,
+            ],
             "velocity": ["width": velocity.width, "height": velocity.height],
-            "predictedEndLocation": ["x": predictedEndLocation.x, "y": predictedEndLocation.y],
-            "predictedEndTranslation": ["width": predictedEndTranslation.width, "height": predictedEndTranslation.height]
+            "predictedEndLocation": [
+                "x": predictedEndLocation.x, "y": predictedEndLocation.y,
+            ],
+            "predictedEndTranslation": [
+                "width": predictedEndTranslation.width,
+                "height": predictedEndTranslation.height,
+            ],
         ]
     }
 }

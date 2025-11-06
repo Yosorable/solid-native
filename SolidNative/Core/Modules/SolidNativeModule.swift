@@ -14,10 +14,10 @@ class SolidNativeModule {
     class var name: String {
         "SolidNativeModule"
     }
-    
+
     required init() {
     }
-    
+
     func getJSValueRepresentation() -> JSValue {
         return JSValue(undefinedIn: jsContext)
     }

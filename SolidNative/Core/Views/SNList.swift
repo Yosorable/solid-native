@@ -9,15 +9,14 @@ import Foundation
 import SwiftUI
 
 class SNList: SolidNativeView {
-    
     class override var name: String {
         "sn_list"
     }
-    
+
     struct SNList: View {
         @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
-        
+
         var body: some View {
             let children = props.getChildren()
             let _listStyle = props.getString(name: "listStyle", default: "")
@@ -33,8 +32,7 @@ class SNList: SolidNativeView {
             } else if _listStyle == "sidebar" {
                 listStyle = SidebarListStyle.sidebar
             }
-            
-            
+
             return AnyView(
                 List {
                     ForEach(children, id: \.id) { child in
@@ -43,13 +41,16 @@ class SNList: SolidNativeView {
                 }
                 .listStyle(listStyle)
             )
-            .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
-            
+            .solidNativeViewModifiers(
+                mods: [props.values],
+                keys: props.keys,
+                owner: owner
+            )
+
         }
     }
-    
+
     override func render() -> AnyView {
         return AnyView(SNList(props: self.props, owner: self))
     }
-    
 }

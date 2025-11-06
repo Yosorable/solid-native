@@ -9,32 +9,34 @@ import Foundation
 import SwiftUI
 
 class SNLazyVGrid: SolidNativeView {
-    
     class override var name: String {
         "sn_lazy_vgrid"
     }
-    
+
     struct SNLazyVGrid: View {
-                @ObservedObject var props: SolidNativeProps
+        @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
-        
+
         var body: some View {
             let children = props.getChildren()
-            return LazyVGrid (
+            return LazyVGrid(
                 columns: [GridItem(.adaptive(minimum: 100), spacing: 16)],
-                spacing: 16) {
-                    ForEach(children, id: \.id) { child in
-                        child.render()
-                    }
+                spacing: 16
+            ) {
+                ForEach(children, id: \.id) { child in
+                    child.render()
                 }
-                .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
-            
+            }
+            .solidNativeViewModifiers(
+                mods: [props.values],
+                keys: props.keys,
+                owner: owner
+            )
+
         }
     }
-    
+
     override func render() -> AnyView {
         return AnyView(SNLazyVGrid(props: self.props, owner: self))
     }
-    
 }
-

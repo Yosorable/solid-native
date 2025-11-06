@@ -9,11 +9,10 @@ import Foundation
 import SwiftUI
 
 class SNButtonView: SolidNativeView {
-    
     class override var name: String {
         "sn_button"
     }
-    
+
     struct SNButton: View {
         @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
@@ -23,11 +22,13 @@ class SNButtonView: SolidNativeView {
                 callback.call(withArguments: nil)
             }
         }
-        
+
         var body: some View {
             let title = props.getString(name: "title")
             let _role = props.getString(name: "role")
-            let role: ButtonRole? = _role == "cancel" ? .cancel : (_role == "destructive" ? .destructive : nil)
+            let role: ButtonRole? =
+                _role == "cancel"
+                ? .cancel : (_role == "destructive" ? .destructive : nil)
             let children = props.getChildren()
             var view: AnyView
             if children.count == 0 {
@@ -47,13 +48,16 @@ class SNButtonView: SolidNativeView {
                     }
                 )
             }
-            return view.solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
+            return view.solidNativeViewModifiers(
+                mods: [props.values],
+                keys: props.keys,
+                owner: owner
+            )
         }
     }
-    
-    
+
     override func render() -> AnyView {
         AnyView(SNButton(props: self.props, owner: self))
     }
-    
+
 }

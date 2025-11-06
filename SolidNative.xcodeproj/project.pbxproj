@@ -36,7 +36,6 @@
 		48484DBC2BE4FE0C0024AE4E /* SNTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DBB2BE4FE0C0024AE4E /* SNTextField.swift */; };
 		484CB0652BF341DB008D5448 /* SNLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484CB0642BF341DB008D5448 /* SNLabel.swift */; };
 		48622C8F2BF29E6600C4AA62 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 48622C8E2BF29E6600C4AA62 /* SQLite */; };
-		48622C922BF2A00E00C4AA62 /* SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48622C912BF2A00E00C4AA62 /* SQLite.swift */; };
 		48682C3C2BF1CA9E00471ED7 /* utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3B2BF1CA9E00471ED7 /* utils.swift */; };
 		48682C3E2BF1CD7900471ED7 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3D2BF1CD7900471ED7 /* LazyView.swift */; };
 		4876BC4D2BE5C65200909088 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4876BC4C2BE5C65200909088 /* PageView.swift */; };
@@ -93,7 +92,6 @@
 		48484DB52BE4CA2C0024AE4E /* View+Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Modifiers.swift"; sourceTree = "<group>"; };
 		48484DBB2BE4FE0C0024AE4E /* SNTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNTextField.swift; sourceTree = "<group>"; };
 		484CB0642BF341DB008D5448 /* SNLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNLabel.swift; sourceTree = "<group>"; };
-		48622C912BF2A00E00C4AA62 /* SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLite.swift; sourceTree = "<group>"; };
 		48682C3B2BF1CA9E00471ED7 /* utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utils.swift; sourceTree = "<group>"; };
 		48682C3D2BF1CD7900471ED7 /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		4876BC4C2BE5C65200909088 /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
@@ -164,7 +162,6 @@
 		48484D892BE461930024AE4E /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				48622C902BF29FF400C4AA62 /* JSExport */,
 				48484D8A2BE461A60024AE4E /* Modules */,
 				48484D942BE462740024AE4E /* Views */,
 				48484D922BE462430024AE4E /* SolidNativeCore.swift */,
@@ -227,14 +224,6 @@
 				48B0E4FB2BE649D7008507AB /* Utils.swift */,
 			);
 			path = Base;
-			sourceTree = "<group>";
-		};
-		48622C902BF29FF400C4AA62 /* JSExport */ = {
-			isa = PBXGroup;
-			children = (
-				48622C912BF2A00E00C4AA62 /* SQLite.swift */,
-			);
-			path = JSExport;
 			sourceTree = "<group>";
 		};
 		4876BC512BE5F0AC00909088 /* Components */ = {
@@ -354,7 +343,6 @@
 				48484DA32BE4704F0024AE4E /* SNToggle.swift in Sources */,
 				48682C3E2BF1CD7900471ED7 /* LazyView.swift in Sources */,
 				48484D8D2BE461C40024AE4E /* SNRender.swift in Sources */,
-				48622C922BF2A00E00C4AA62 /* SQLite.swift in Sources */,
 				4876BC532BE5F0C100909088 /* ZoomableScrollView.swift in Sources */,
 				4876BC4D2BE5C65200909088 /* PageView.swift in Sources */,
 				48484D992BE462BC0024AE4E /* SolidNativeView.swift in Sources */,

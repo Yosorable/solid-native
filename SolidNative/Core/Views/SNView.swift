@@ -8,37 +8,32 @@
 import Foundation
 import SwiftUI
 
-class SNView: SolidNativeView, Hashable {
-    static func == (lhs: SNView, rhs: SNView) -> Bool {
-        return lhs.id.uuidString == rhs.id.uuidString
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id.uuidString)
-    }
-    
-    
+class SNView: SolidNativeView {
     class override var name: String {
         "sn_view"
     }
 
     struct _SNView: View {
-                @ObservedObject var props: SolidNativeProps
+        @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
 
         var body: some View {
-        let children = props.getChildren()
+            let children = props.getChildren()
             VStack {
                 ForEach(children, id: \.id) { child in
                     child.render()
                 }
             }
-            .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
+            .solidNativeViewModifiers(
+                mods: [props.values],
+                keys: props.keys,
+                owner: owner
+            )
         }
     }
-    
+
     override func render() -> AnyView {
         return AnyView(_SNView(props: self.props, owner: self))
     }
-    
+
 }

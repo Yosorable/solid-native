@@ -26,7 +26,10 @@ class WebViewController: ObservableObject {
             config.userContentController = WKUserContentController()
 
             config.mediaTypesRequiringUserActionForPlayback = []
-            config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+            config.preferences.setValue(
+                true,
+                forKey: "allowFileAccessFromFileURLs"
+            )
             config.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
             config.allowsInlineMediaPlayback = true
             config.allowsPictureInPictureMediaPlayback = true
@@ -37,33 +40,23 @@ class WebViewController: ObservableObject {
 
             let webView = WKWebView(frame: .zero, configuration: config)
 
-//            webView.isOpaque = false
+            //            webView.isOpaque = false
             webView.scrollView.contentInsetAdjustmentBehavior = .always
             webView.allowsBackForwardNavigationGestures = true
             self.webView = webView
         }
-        
+
         self.parent = parent
     }
-    
+
     deinit {
         print("--- WebViewController deinit")
     }
 
-//    @discardableResult
-//    func load(_ request: URLRequest) -> WKNavigation? {
-//        return webView.load(request)
-//    }
-//
-//    @discardableResult
-//    func loadHTMLString(_ html: String, baseURL: URL?) -> WKNavigation? {
-//        return webView.loadHTMLString(html, baseURL: baseURL)
-//    }
-
     func updateLoadingState(isLoading: Bool) {
         self.isLoading = isLoading
     }
-    
+
     func getCurrentURL() -> URL? {
         return webView.url
     }
@@ -95,31 +88,54 @@ struct MWebView: UIViewRepresentable {
             self.parent = parent
         }
 
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        func webView(
+            _ webView: WKWebView,
+            didStartProvisionalNavigation navigation: WKNavigation!
+        ) {
             parent.webViewController.updateLoadingState(isLoading: true)
         }
 
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
+        {
             parent.webViewController.updateLoadingState(isLoading: false)
         }
 
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        func webView(
+            _ webView: WKWebView,
+            didFailProvisionalNavigation navigation: WKNavigation!,
+            withError error: Error
+        ) {
             parent.webViewController.updateLoadingState(isLoading: false)
             // Optionally handle errors here
         }
 
-        func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor () -> Void) {
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptAlertPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping @MainActor () -> Void
+        ) {
             defer { completionHandler() }
-            guard let holder = parent.webViewController.parent, let fn = holder.props.getPropAsJSValue(name: "onAlert") else {
+            guard let holder = parent.webViewController.parent,
+                let fn = holder.props.getPropAsJSValue(name: "onAlert")
+            else {
                 return
             }
             fn.call(withArguments: [message])
         }
 
-        func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping @MainActor (String?) -> Void) {
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptTextInputPanelWithPrompt prompt: String,
+            defaultText: String?,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping @MainActor (String?) -> Void
+        ) {
             var res: String? = nil
             defer { completionHandler(res) }
-            guard let holder = parent.webViewController.parent, let fn = holder.props.getPropAsJSValue(name: "onPrompt") else {
+            guard let holder = parent.webViewController.parent,
+                let fn = holder.props.getPropAsJSValue(name: "onPrompt")
+            else {
                 return
             }
             var args = [prompt]

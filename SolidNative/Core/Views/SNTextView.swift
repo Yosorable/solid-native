@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 class SNTextView: SolidNativeView {
-
     class override var name: String {
         "sn_text"
     }

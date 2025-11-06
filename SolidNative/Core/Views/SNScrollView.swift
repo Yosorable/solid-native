@@ -9,15 +9,14 @@ import Foundation
 import SwiftUI
 
 class SNScrollView: SolidNativeView {
-    
     class override var name: String {
         "sn_scrollview"
     }
-    
+
     struct _SNVScrollView: View {
-                @ObservedObject var props: SolidNativeProps
+        @ObservedObject var props: SolidNativeProps
         weak var owner: SolidNativeView?
-        
+
         var body: some View {
             let children = props.getChildren()
             ScrollView {
@@ -25,12 +24,16 @@ class SNScrollView: SolidNativeView {
                     child.render()
                 }
             }
-            .solidNativeViewModifiers(mods: [props.values], keys: props.keys, owner: owner)
+            .solidNativeViewModifiers(
+                mods: [props.values],
+                keys: props.keys,
+                owner: owner
+            )
         }
     }
-    
+
     override func render() -> AnyView {
         return AnyView(_SNVScrollView(props: self.props, owner: self))
     }
-    
+
 }

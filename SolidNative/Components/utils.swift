@@ -17,9 +17,13 @@ func GetKeyWindowUIViewController() -> UIViewController? {
     return kw?.rootViewController
 }
 
-func GetTopViewController(controller: UIViewController? = GetKeyWindowUIViewController()) -> UIViewController? {
+func GetTopViewController(
+    controller: UIViewController? = GetKeyWindowUIViewController()
+) -> UIViewController? {
     if let navigationController = controller as? UINavigationController {
-        return GetTopViewController(controller: navigationController.visibleViewController)
+        return GetTopViewController(
+            controller: navigationController.visibleViewController
+        )
     }
     if let tabController = controller as? UITabBarController {
         if let selected = tabController.selectedViewController {
