@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import JavaScriptCore
+import QuickJS
 import SwiftUI
 
 struct SNTabChild: View {
@@ -46,7 +46,7 @@ class SNTabView: SolidNativeView {
 
         var body: some View {
             let tabs = props.getPropAsJSValue(name: "tabs")
-            let cnt = tabs?.toArray().count ?? 0
+            let cnt = tabs?.forProperty("length").toInt() ?? 0
             TabView {
                 ForEach(0..<cnt, id: \.self) { idx in
                     LazyView(

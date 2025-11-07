@@ -19,10 +19,10 @@ class SNVStack: SolidNativeView {
 
         var body: some View {
             let children = props.getChildren()
-            let spacing = props.getNumberOrNil(name: "spacing")
+            let spacing = props.getPropAsJSValue(name: "spacing")
             var sp: CGFloat? = nil
-            if let spacing = spacing {
-                sp = spacing.doubleValue
+            if let spacing = spacing?.toDouble() {
+                sp = spacing
             }
 
             let alignment =
@@ -60,10 +60,10 @@ class SNHStack: SolidNativeView {
 
         var body: some View {
             let children = props.getChildren()
-            let spacing = props.getNumberOrNil(name: "spacing")
+            let spacing = props.getPropAsJSValue(name: "spacing")
             var sp: CGFloat? = nil
-            if let spacing = spacing {
-                sp = spacing.doubleValue
+            if let spacing = spacing?.toDouble() {
+                sp = spacing
             }
 
             let alignment =
@@ -134,10 +134,10 @@ class SNLazyVStack: SolidNativeView {
 
         var body: some View {
             let children = props.getChildren()
-            let spacing = props.getNumberOrNil(name: "spacing")
+            let spacing = props.getPropAsJSValue(name: "spacing")
             var sp: CGFloat? = nil
-            if let spacing = spacing {
-                sp = spacing.doubleValue
+            if let spacing = spacing?.toDouble() {
+                sp = spacing
             }
 
             let alignment =
@@ -174,10 +174,10 @@ class SNLazyHStack: SolidNativeView {
 
         var body: some View {
             let children = props.getChildren()
-            let spacing = props.getNumberOrNil(name: "spacing")
+            let spacing = props.getPropAsJSValue(name: "spacing")
             var sp: CGFloat? = nil
-            if let spacing = spacing {
-                sp = spacing.doubleValue
+            if let spacing = spacing?.toDouble() {
+                sp = spacing
             }
 
             let alignment =

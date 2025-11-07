@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import JavaScriptCore
+import QuickJS
 import SwiftUI
 
 class SolidNativeView: Hashable {
@@ -40,7 +40,7 @@ class SolidNativeView: Hashable {
 
     let props: SolidNativeProps = SolidNativeProps()
 
-    @objc public func setProp(_ name: String, _ value: JSValue?) {
+    public func setProp(_ name: String, _ value: JSValue?) {
         assert(
             name != "children",
             "Err: User `removeChild` or `insertBefore` to update children!"

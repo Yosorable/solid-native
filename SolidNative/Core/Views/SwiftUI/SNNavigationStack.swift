@@ -5,7 +5,7 @@
 //  Created by LZY on 2025/11/3.
 //
 
-import JavaScriptCore
+import QuickJS
 import SwiftUI
 
 struct NavigationRouteParam: Hashable {
@@ -26,15 +26,16 @@ class SNNavigationStack: SolidNativeView {
         init(props: SolidNativeProps, owner: SolidNativeView) {
             self.props = props
             if let newVal = props.getPropAsJSValue(name: "path"),
-                newVal.isArray == true, let val = newVal.toArray() as? [String],
+                newVal.isArray == true,
+                let cnt = newVal.forProperty("length")?.toInt(),
                 let destFunc = props.getPropAsJSValue(
                     name: "navigationDestination"
                 )
             {
                 var newPath = [NavigationRouteParam]()
-                for i in 0..<val.count {
-                    let name = val[i]
-                    if let node = destFunc.call(withArguments: [name]),
+                for i in 0..<cnt {
+                    if let name = newVal.atIndex(i).toString(),
+                        let node = destFunc.call(withArguments: [name]),
                         node.isObject,
                         let id = node.forProperty("id").toString()
                     {
@@ -72,6 +73,39 @@ class SNNavigationStack: SolidNativeView {
             }
         }
 
+        func onChangeByJS(oldVal: JSValue?, newVal: JSValue?) {
+            guard newVal?.isArray == true,
+                let val = newVal,
+                let cnt = val.forProperty("length")?.toInt(),
+                let destFunc = props.getPropAsJSValue(
+                    name: "navigationDestination"
+                )
+            else { return }
+            var breakIdx = 0
+            let mx = min(self.path.count, cnt)
+
+            for i in 0..<mx {
+                if val.atIndex(i).toString() != self.path[i].name {
+                    break
+                }
+                breakIdx += 1
+            }
+            var newPath = Array(self.path[0..<breakIdx])
+            for i in breakIdx..<cnt {
+
+                if let name = val.atIndex(i).toString(),
+                    let node = destFunc.call(withArguments: [name]),
+                    node.isObject,
+                    let id = node.forProperty("id").toString()
+                {
+                    newPath.append(
+                        NavigationRouteParam(name: name, id: id)
+                    )
+                }
+            }
+            self.path = newPath
+        }
+
         var body: some View {
             return NavigationStack(path: $path) {
                 ForEach(props.getChildren(), id: \.id) { child in
@@ -79,36 +113,7 @@ class SNNavigationStack: SolidNativeView {
                 }
                 .onChange(of: path) { onChangeByNative(oldVal: $0, newVal: $1) }
                 .onChange(of: props.getPropAsJSValue(name: "path")) {
-                    oldVal,
-                    newVal in
-                    guard newVal?.isArray == true,
-                        let val = newVal?.toArray() as? [String],
-                        let destFunc = props.getPropAsJSValue(
-                            name: "navigationDestination"
-                        )
-                    else { return }
-                    var breakIdx = 0
-                    let mx = min(self.path.count, val.count)
-
-                    for i in 0..<mx {
-                        if val[i] != self.path[i].name {
-                            break
-                        }
-                        breakIdx += 1
-                    }
-                    var newPath = Array(self.path[0..<breakIdx])
-                    for i in breakIdx..<val.count {
-                        let name = val[i]
-                        if let node = destFunc.call(withArguments: [name]),
-                            node.isObject,
-                            let id = node.forProperty("id").toString()
-                        {
-                            newPath.append(
-                                NavigationRouteParam(name: name, id: id)
-                            )
-                        }
-                    }
-                    self.path = newPath
+                    onChangeByJS(oldVal: $0, newVal: $1)
                 }
                 .navigationDestination(for: NavigationRouteParam.self) { item in
                     if item.id != "" {

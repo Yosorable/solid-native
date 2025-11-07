@@ -33,7 +33,7 @@
 		48484DB62BE4CA2C0024AE4E /* View+Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DB52BE4CA2C0024AE4E /* View+Modifiers.swift */; };
 		48484DBC2BE4FE0C0024AE4E /* SNTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48484DBB2BE4FE0C0024AE4E /* SNTextField.swift */; };
 		484CB0652BF341DB008D5448 /* SNLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484CB0642BF341DB008D5448 /* SNLabel.swift */; };
-		48622C8F2BF29E6600C4AA62 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 48622C8E2BF29E6600C4AA62 /* SQLite */; };
+		484F07902EBDD7DD003E6D4B /* QuickJS in Frameworks */ = {isa = PBXBuildFile; productRef = 484F078F2EBDD7DD003E6D4B /* QuickJS */; };
 		48682C3C2BF1CA9E00471ED7 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3B2BF1CA9E00471ED7 /* UIKit.swift */; };
 		48682C3E2BF1CD7900471ED7 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48682C3D2BF1CD7900471ED7 /* LazyView.swift */; };
 		4869FCBC2EBCDB42004A57BB /* ViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4869FCBB2EBCDB3D004A57BB /* ViewManager.swift */; };
@@ -110,7 +110,7 @@
 			files = (
 				48B614652DE522DD0039A6A2 /* ECMASwift in Frameworks */,
 				48F91E1D2D7B23B6001D5BEA /* ECMASwift in Frameworks */,
-				48622C8F2BF29E6600C4AA62 /* SQLite in Frameworks */,
+				484F07902EBDD7DD003E6D4B /* QuickJS in Frameworks */,
 				4834BE0E2BF056FD00F17D84 /* SDWebImageSwiftUI in Frameworks */,
 				48484D882BE4617A0024AE4E /* ECMASwift in Frameworks */,
 			);
@@ -254,9 +254,9 @@
 			packageProductDependencies = (
 				48484D872BE4617A0024AE4E /* ECMASwift */,
 				4834BE0D2BF056FD00F17D84 /* SDWebImageSwiftUI */,
-				48622C8E2BF29E6600C4AA62 /* SQLite */,
 				48F91E1C2D7B23B6001D5BEA /* ECMASwift */,
 				48B614642DE522DD0039A6A2 /* ECMASwift */,
+				484F078F2EBDD7DD003E6D4B /* QuickJS */,
 			);
 			productName = SolidNative;
 			productReference = 48484D752BE4614A0024AE4E /* SolidNative.app */;
@@ -288,8 +288,8 @@
 			mainGroup = 48484D6C2BE4614A0024AE4E;
 			packageReferences = (
 				4834BE0C2BF056FD00F17D84 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
-				48622C8D2BF29E6600C4AA62 /* XCRemoteSwiftPackageReference "SQLite" */,
 				48B614632DE522DD0039A6A2 /* XCRemoteSwiftPackageReference "ECMASwift" */,
+				484F078E2EBDD7DD003E6D4B /* XCRemoteSwiftPackageReference "QuickJS-Swift" */,
 			);
 			productRefGroup = 48484D762BE4614A0024AE4E /* Products */;
 			projectDirPath = "";
@@ -570,12 +570,12 @@
 				minimumVersion = 3.0.4;
 			};
 		};
-		48622C8D2BF29E6600C4AA62 /* XCRemoteSwiftPackageReference "SQLite" */ = {
+		484F078E2EBDD7DD003E6D4B /* XCRemoteSwiftPackageReference "QuickJS-Swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			repositoryURL = "https://github.com/Yosorable/QuickJS-Swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.15.3;
+				branch = master;
+				kind = branch;
 			};
 		};
 		48B614632DE522DD0039A6A2 /* XCRemoteSwiftPackageReference "ECMASwift" */ = {
@@ -598,10 +598,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ECMASwift;
 		};
-		48622C8E2BF29E6600C4AA62 /* SQLite */ = {
+		484F078F2EBDD7DD003E6D4B /* QuickJS */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 48622C8D2BF29E6600C4AA62 /* XCRemoteSwiftPackageReference "SQLite" */;
-			productName = SQLite;
+			package = 484F078E2EBDD7DD003E6D4B /* XCRemoteSwiftPackageReference "QuickJS-Swift" */;
+			productName = QuickJS;
 		};
 		48B614642DE522DD0039A6A2 /* ECMASwift */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -26,13 +26,11 @@ class SNSlider: SolidNativeView {
         }
 
         var body: some View {
-            let maxValue = props.getNumber(name: "maxValue", default: 100)
-                .doubleValue
-            let minValue = props.getNumber(name: "minValue", default: 0)
-                .doubleValue
+            let maxValue = props.getPropAsJSValue(name: "maxValue")?.toDouble() ?? 100
+            let minValue = props.getPropAsJSValue(name: "minValue")?.toDouble() ?? 0
             let bd = Binding<Double>(
                 get: {
-                    props.getNumberOrNil(name: "value")?.doubleValue ?? tmpVal
+                    props.getPropAsJSValue(name: "value")?.toDouble() ?? tmpVal
                 },
                 set: { val in
                     props.callCallbackWithArgs(name: "onChange", args: [val])
@@ -40,11 +38,11 @@ class SNSlider: SolidNativeView {
                 }
             )
 
-            if let step = props.getNumberOrNil(name: "step") {
+            if let step = props.getPropAsJSValue(name: "step")?.toDouble() {
                 Slider(
                     value: bd,
                     in: minValue...maxValue,
-                    step: step.doubleValue,
+                    step: step,
                     onEditingChanged: onEditingChanged
                 ).solidNativeViewModifiers(
                     mods: [props.values],

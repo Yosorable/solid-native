@@ -1,5 +1,5 @@
 {
-  "originHash" : "aea9f384cab5c36910b0df1dd4c384ca67b2603740eb5272d204bd5924fc7132",
+  "originHash" : "b06a18ca5a39b5e41bf1b5c3495a54bcf3731836122088ecf200a369331938c6",
   "pins" : [
     {
       "identity" : "ecmaswift",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "eb837bf3f6767536ef849a0e9b57e4ca01b43196",
         "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "quickjs-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Yosorable/QuickJS-Swift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "ec0f5aef8754df9157ed259b29713b3bcb158030"
       }
     },
     {
@@ -26,15 +35,6 @@
       "state" : {
         "revision" : "b7af5e6bd9c2987e41730400d1baad13d74a141a",
         "version" : "3.0.4"
-      }
-    },
-    {
-      "identity" : "sqlite.swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stephencelis/SQLite.swift",
-      "state" : {
-        "revision" : "a95fc6df17d108bd99210db5e8a9bac90fe984b8",
-        "version" : "0.15.3"
       }
     }
   ],

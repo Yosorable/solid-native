@@ -18,8 +18,8 @@ class SNSpacer: SolidNativeView {
         let owner: SolidNativeView
 
         var body: some View {
-            let minLength = props.getNumber(name: "minLenght", default: -1)
-            Spacer(minLength: minLength == -1 ? nil : minLength.doubleValue)
+            let minLength = props.getPropAsJSValue(name: "minLenght")?.toDouble() ?? -1
+            Spacer(minLength: minLength == -1 ? nil : minLength)
                 .solidNativeViewModifiers(
                     mods: [props.values],
                     keys: props.keys,

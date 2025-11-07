@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import JavaScriptCore
+import QuickJS
 import SwiftUI
 
 class SolidNativeProps: ObservableObject {
@@ -24,45 +24,36 @@ class SolidNativeProps: ObservableObject {
     }
 
     func getString(name: String, `default`: String = "") -> String {
-        if let prop = (values[name] ?? nil) {
-            return prop.toString()
+        if let prop = values[name]??.toString() {
+            return prop
         }
         return `default`
     }
 
     func getStringOrNil(name: String) -> String? {
-        if let prop = (values[name] ?? nil) {
-            return prop.toString()
-        }
-        return nil
+        values[name]??.toString()
     }
 
-    func getNumber(name: String, `default`: NSNumber = 0) -> NSNumber {
-        if let prop = (values[name] ?? nil) {
-            return prop.toNumber()
+    func getNumber(name: String, `default`: Int = 0) -> Int {
+        if let prop = values[name]??.toInt() {
+            return prop
         }
         return `default`
     }
 
-    func getNumberOrNil(name: String) -> NSNumber? {
-        if let prop = (values[name] ?? nil) {
-            return prop.toNumber()
-        }
-        return nil
+    func getNumberOrNil(name: String) -> Int? {
+        values[name]??.toInt()
     }
 
     func getBoolean(name: String, `default`: Bool = false) -> Bool {
-        if let prop = (values[name] ?? nil) {
-            return prop.toBool()
+        if let prop = values[name]??.toBool() {
+            return prop
         }
         return `default`
     }
 
     func getBooleanOrNil(name: String) -> Bool? {
-        if let prop = (values[name] ?? nil), prop.isBoolean {
-            return prop.toBool()
-        }
-        return nil
+        values[name]??.toBool()
     }
 
     func getChildren() -> [SolidNativeView] {
@@ -75,7 +66,7 @@ class SolidNativeProps: ObservableObject {
 
     func callCallbackWithArgs(name: String, args: [Any]) {
         if let callback = getPropAsJSValue(name: name) {
-            callback.call(withArguments: args)
+            _ = callback.call(withArguments: args)
         }
     }
 

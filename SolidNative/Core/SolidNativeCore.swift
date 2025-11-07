@@ -5,27 +5,23 @@
 //  Created by LZY on 2024/5/3.
 //
 
-import ECMASwift
 import Foundation
-import JavaScriptCore
+import QuickJS
 
-/**
-
- */
 class SolidNativeCore {
     static var shared: SolidNativeCore!
-
+    
     let jsRuntime: JSRuntime
-    var jsContext: JSContext {
-        return jsRuntime.context
-    }
+    let jsContext: JSContext
 
     let renderer: SNRender
     
     init() {
-        let jsRuntime = JSRuntime()
+        let jsRuntime = JSRuntime()!
         self.jsRuntime = jsRuntime
-        self.renderer = SNRender(vm: ViewManager(jsContext: jsRuntime.context))
+        self.jsContext = jsRuntime.createContext()!
+        self.renderer = SNRender(vm: ViewManager(jsContext: jsContext))
+        
     }
 
     deinit {
@@ -36,11 +32,7 @@ class SolidNativeCore {
     private func injectModuleIntoContext() {
         guard !done else { return }
         done = true
-        let r = renderer.getJSValueRepresentation(jsContext: jsContext)
-        jsContext.setObject(
-            r,
-            forKeyedSubscript: "SolidNativeRenderer" as NSString
-        )
+        renderer.setupFoQuickJS(context: jsContext)
     }
     
     func getRootView() -> SolidNativeView {
@@ -90,16 +82,13 @@ class SolidNativeCore {
                 encoding: .utf8
             )
 
-            jsContext.exceptionHandler = { (_, value) in
-                print("JS Error: " + value!.toString()!)
-                print(
-                    "stack: \(value?.objectForKeyedSubscript("stack").toString() ?? "")"
-                )
-            }
-
             jsContext.evaluateScript(
                 bundle,
-                withSourceURL: SolidNativeCore.sourcePath
+                withSourceURL: SolidNativeCore.bundlePath,
+            )
+            jsContext.evaluateScript(
+                "console.log(SolidNativeRenderer.createNodeByName('sn_view'))",
+                withSourceURL: SolidNativeCore.bundlePath,
             )
         } catch {
             print("Url was bad!")

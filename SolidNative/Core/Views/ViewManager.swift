@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import JavaScriptCore
+import QuickJS
 
 class ViewManager {
     private static let viewRegistry: [String: SolidNativeView.Type] = {
