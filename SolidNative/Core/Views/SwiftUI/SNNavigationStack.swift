@@ -68,7 +68,15 @@ class SNNavigationStack: SolidNativeView {
                 owner.vm.jsContext.evaluateScript(
                     "cleanPage(\"\(id)\")"
                 )
-                owner.vm.removePageByRoot(id)
+            }
+
+            if toDelIds.count > 0 {
+                let vm = owner.vm
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    toDelIds.forEach { id in
+                        vm?.removePageByRoot(id)
+                    }
+                }
             }
         }
 

@@ -15,13 +15,20 @@ struct RootPageView: View {
     let root: SolidNativeView
 
     init() {
-        core = SolidNativeCore()
-        core.runApp()
+        if SolidNativeCore.shared == nil {
+            core = SolidNativeCore()
+            SolidNativeCore.shared = core
+        } else {
+            core = SolidNativeCore.shared
+        }
+
         if core.getRootView().children.count == 1 {
             root = core.getRootView().children[0]
         } else {
             root = core.getRootView()
         }
+
+        core.runApp()
     }
 
     var body: some View {

@@ -18,7 +18,12 @@ struct SNTabChild: View {
         id = content?.call(withArguments: []).forProperty("id")!.toString()
         if let id = id, let vm = vm {
             onAddTab(id)
-            node = vm.getViewById(id)
+            let page = vm.getViewById(id)
+            if page.children.count == 1 {
+                node = page.children[0]
+            } else {
+                node = page
+            }
         }
     }
     var body: some View {

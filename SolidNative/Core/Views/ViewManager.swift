@@ -7,6 +7,7 @@
 
 import Foundation
 import JavaScriptCore
+import UIKit
 
 class ViewManager {
     private static let viewRegistry: [String: SolidNativeView.Type] = {
@@ -46,16 +47,20 @@ class ViewManager {
 
     private var createdViewRegistry: [String: SolidNativeView] = [:]
     let jsContext: JSContext
-    //    let rootElement: SNView
-    let rootID: String
+
+    private var rid: String?
+    var rootID: String {
+        if let id = rid, createdViewRegistry[id] != nil {
+            return id
+        }
+        let root = SNView()
+        createdViewRegistry[root.id.uuidString] = root
+        rid = root.id.uuidString
+        return root.id.uuidString
+    }
 
     init(jsContext: JSContext) {
         self.jsContext = jsContext
-        //        self.rootElement = SNView()
-        //        self.addViewToRegistry(view: self.rootElement)
-        let root = SNView()
-        rootID = root.id.uuidString
-        self.addViewToRegistry(view: root)
     }
 
     deinit {
@@ -150,13 +155,72 @@ class ViewManager {
 
     func debugPrint() {
         #if DEBUG
-            for (k, v) in createdViewRegistry {
-                let address = Unmanaged.passUnretained(v).toOpaque()
-                let retainCount = CFGetRetainCount(v as CFTypeRef)
-                print(
-                    "id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootID ? "[root]" : "")"
-                )
+            var msg = "veiw count: \(createdViewRegistry.count)\n"
+
+            var visited = [String: Bool]()
+            func findParent(_ id: String) -> String {
+                var tmp = id
+                while let v = createdViewRegistry[tmp], let p = v.parentElement
+                {
+                    tmp = p.id.uuidString
+                }
+                return tmp
             }
+            func rec(_ id: String, _ prefix: String = "") {
+                guard let v = createdViewRegistry[id] else { return }
+                let k = v.id.uuidString
+                if visited[k] != true {
+                    visited[k] = true
+
+                    let address = Unmanaged.passUnretained(v).toOpaque()
+                    let retainCount = CFGetRetainCount(v as CFTypeRef)
+                    msg +=
+                        "\(prefix)\(k == rootID ? "[root] " : "")\(v.getName().trimmingPrefix("sn_")): ref: \(retainCount), addr: \(address)\n"
+                    print(
+                        "\(prefix)id: \(k), name: \(v.getName()), ref: \(retainCount), address: \(address)  \(k == rootID ? "[root]" : "")"
+                    )
+                }
+
+                for c in v.children {
+                    rec(c.id.uuidString, prefix + "_")
+                }
+
+                for c in v.indirectChildren {
+                    rec(c.id.uuidString, prefix + "_")
+                }
+
+                if let n = v.next {
+                    rec(n.id.uuidString, prefix)
+                }
+            }
+
+            rec(rootID)
+            for (k, _) in createdViewRegistry {
+                if visited[k] == true { continue }
+                let id = findParent(k)
+                rec(id)
+            }
+
+            let vc = UIViewController()
+            vc.title = "debug"
+            let textView = UITextView()
+            textView.text = msg
+            textView.isEditable = false
+            textView.font = .systemFont(ofSize: 15)
+            vc.view = textView
+            vc.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .close,
+                target: nil,
+                action: nil
+            )
+            vc.navigationItem.rightBarButtonItem?.primaryAction = UIAction { [weak vc] _ in
+                vc?.dismiss(animated: true)
+            }
+
+            GetTopViewController()?.present(
+                UINavigationController(rootViewController: vc),
+                animated: true
+            )
         #endif
     }
 }

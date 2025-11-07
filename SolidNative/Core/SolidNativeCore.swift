@@ -21,7 +21,7 @@ class SolidNativeCore {
     }
 
     let renderer: SNRender
-    
+
     init() {
         let jsRuntime = JSRuntime()
         self.jsRuntime = jsRuntime
@@ -42,7 +42,7 @@ class SolidNativeCore {
             forKeyedSubscript: "SolidNativeRenderer" as NSString
         )
     }
-    
+
     func getRootView() -> SolidNativeView {
         return renderer.viewManager.getRoot()
     }
@@ -51,26 +51,14 @@ class SolidNativeCore {
         for: .documentDirectory,
         in: .userDomainMask
     )[0].appendingPathComponent("index.js")
-    static let sourcePath = FileManager.default.urls(
-        for: .documentDirectory,
-        in: .userDomainMask
-    )[0].appendingPathComponent("index.js.map")
 
-    static func download(baseUrl: String, sourceUrl: String) {
-        if let url = URL(string: baseUrl),
-            let sourceUrl = URL(string: sourceUrl)
-        {
+    static func download(baseUrl: String) {
+        if let url = URL(string: baseUrl) {
             do {
                 let bundle = try String(contentsOf: url, encoding: .utf8)
-                let source = try String(contentsOf: sourceUrl, encoding: .utf8)
 
                 try bundle.write(
                     to: bundlePath,
-                    atomically: true,
-                    encoding: .utf8
-                )
-                try source.write(
-                    to: sourcePath,
                     atomically: true,
                     encoding: .utf8
                 )
@@ -99,7 +87,7 @@ class SolidNativeCore {
 
             jsContext.evaluateScript(
                 bundle,
-                withSourceURL: SolidNativeCore.sourcePath
+                withSourceURL: SolidNativeCore.bundlePath
             )
         } catch {
             print("Url was bad!")

@@ -44,7 +44,6 @@ struct ContentView: View {
 //    @State var url: String = "http://192.168.2.102:8080"
 //    @State var url2: String = "http://192.168.2.102:8080/source"
     @State var url: String = "http://192.168.0.32:5050/index.js"
-    @State var url2: String = "http://192.168.0.32:5050/index.js.map"
     @State var downloading: Bool = false
     
     @State var openApp = false
@@ -60,13 +59,10 @@ struct ContentView: View {
                 TextField(text: $url, label: {
                     Text("url")
                 })
-                TextField(text: $url2, label: {
-                    Text("source")
-                })
                 Button {
                     downloading = true
                     DispatchQueue.global(qos: .background).async {
-                        SolidNativeCore.download(baseUrl: url, sourceUrl: url2)
+                        SolidNativeCore.download(baseUrl: url)
                         DispatchQueue.main.async {
                             downloading = false
                         }
