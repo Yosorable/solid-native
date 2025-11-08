@@ -80,43 +80,49 @@ class SNNavigationStack: SolidNativeView {
             }
         }
 
+        func onChangeByJS(oldVal: [String]?, newVal: [String]?) {
+            guard let val = newVal,
+                let destFunc = props.getPropAsJSValue(
+                    name: "navigationDestination"
+                )
+            else { return }
+            var breakIdx = 0
+            let mx = min(self.path.count, val.count)
+
+            for i in 0..<mx {
+                if val[i] != self.path[i].name {
+                    break
+                }
+                breakIdx += 1
+            }
+            var newPath = Array(self.path[0..<breakIdx])
+            for i in breakIdx..<val.count {
+                let name = val[i]
+                if let node = destFunc.call(withArguments: [name]),
+                    node.isObject,
+                    let id = node.forProperty("id").toString()
+                {
+                    newPath.append(
+                        NavigationRouteParam(name: name, id: id)
+                    )
+                }
+            }
+            self.path = newPath
+        }
+
         var body: some View {
             return NavigationStack(path: $path) {
                 ForEach(props.getChildren(), id: \.id) { child in
                     child.render()
                 }
-                .onChange(of: path) { onChangeByNative(oldVal: $0, newVal: $1) }
-                .onChange(of: props.getPropAsJSValue(name: "path")) {
-                    oldVal,
-                    newVal in
-                    guard newVal?.isArray == true,
-                        let val = newVal?.toArray() as? [String],
-                        let destFunc = props.getPropAsJSValue(
-                            name: "navigationDestination"
-                        )
-                    else { return }
-                    var breakIdx = 0
-                    let mx = min(self.path.count, val.count)
-
-                    for i in 0..<mx {
-                        if val[i] != self.path[i].name {
-                            break
-                        }
-                        breakIdx += 1
-                    }
-                    var newPath = Array(self.path[0..<breakIdx])
-                    for i in breakIdx..<val.count {
-                        let name = val[i]
-                        if let node = destFunc.call(withArguments: [name]),
-                            node.isObject,
-                            let id = node.forProperty("id").toString()
-                        {
-                            newPath.append(
-                                NavigationRouteParam(name: name, id: id)
-                            )
-                        }
-                    }
-                    self.path = newPath
+                .onChange(of: path) {
+                    onChangeByNative(oldVal: $0, newVal: $1)
+                }
+                .onChange(
+                    of: (props.getPropAsJSValue(name: "path")?.toArray()
+                        as? [String])
+                ) {
+                    onChangeByJS(oldVal: $0, newVal: $1)
                 }
                 .navigationDestination(for: NavigationRouteParam.self) { item in
                     if item.id != "" {
