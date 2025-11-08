@@ -5,12 +5,12 @@
 //  Created by LZY on 2024/5/3.
 //
 
-import SwiftUI
 import SDWebImageSwiftUI
+import SwiftUI
 
 struct TestView: View {
     var id: Int
-    
+
     init(id: Int) {
         self.id = id
         print("init \(id)")
@@ -26,7 +26,7 @@ struct TestView: View {
 
 struct TestView2: View {
     var id: String
-    
+
     init(id: String) {
         self.id = id
         print("init \(id)")
@@ -41,24 +41,25 @@ struct TestView2: View {
 }
 
 struct ContentView: View {
-//    @State var url: String = "http://192.168.2.102:8080"
-//    @State var url2: String = "http://192.168.2.102:8080/source"
     @State var url: String = "http://192.168.0.32:5050/index.js"
     @State var downloading: Bool = false
-    
+
     @State var openApp = false
     @State var colorSchemeNum: Int
-    
+
     init() {
         colorSchemeNum = readOrWriteIntegerFromFile()
     }
-    
+
     var home: some View {
         NavigationStack {
             List {
-                TextField(text: $url, label: {
-                    Text("url")
-                })
+                TextField(
+                    text: $url,
+                    label: {
+                        Text("url")
+                    }
+                )
                 Button {
                     downloading = true
                     DispatchQueue.global(qos: .background).async {
@@ -78,10 +79,12 @@ struct ContentView: View {
                 }.onChange(of: colorSchemeNum) {
                     _ = readOrWriteIntegerFromFile(write: $1)
                 }
-                
+
                 Button {
                     let vc = UIHostingController(rootView: RootPageView())
-                    vc.overrideUserInterfaceStyle = colorSchemeNum == 0 ? .unspecified : (colorSchemeNum == 1 ? .light : .dark)
+                    vc.overrideUserInterfaceStyle =
+                        colorSchemeNum == 0
+                        ? .unspecified : (colorSchemeNum == 1 ? .light : .dark)
                     vc.modalPresentationStyle = .fullScreen
                     GetTopViewController()?.present(vc, animated: true)
                 } label: {
@@ -91,18 +94,23 @@ struct ContentView: View {
             }
             .navigationTitle(Text("Home"))
         }
-        .preferredColorScheme(colorSchemeNum == 0 ? nil : (colorSchemeNum == 1 ? .light : .dark))
+        .preferredColorScheme(
+            colorSchemeNum == 0 ? nil : (colorSchemeNum == 1 ? .light : .dark)
+        )
     }
-    
+
     var body: some View {
-            TabView {
-                AnyView(home).tabItem { Label("Home", systemImage: "house") }.tag(0)
-                LazyView(TestView(id: 1)).tabItem { Label("Test1", systemImage: "book") }.tag(1)
-                LazyView(TestView(id: 2)).tabItem { Label("Test2", systemImage: "book") }.tag(2)
-            }
+        TabView {
+            AnyView(home).tabItem { Label("Home", systemImage: "house") }.tag(0)
+            LazyView(TestView(id: 1)).tabItem {
+                Label("Test1", systemImage: "book")
+            }.tag(1)
+            LazyView(TestView(id: 2)).tabItem {
+                Label("Test2", systemImage: "book")
+            }.tag(2)
+        }
     }
 }
-
 
 func readOrWriteIntegerFromFile(write newValue: Int? = nil) -> Int {
     let fileName = "config"
@@ -117,7 +125,11 @@ func readOrWriteIntegerFromFile(write newValue: Int? = nil) -> Int {
     // 写入新值到文件
     if let newValue = newValue {
         do {
-            try "\(newValue)".write(to: filePath, atomically: true, encoding: .utf8)
+            try "\(newValue)".write(
+                to: filePath,
+                atomically: true,
+                encoding: .utf8
+            )
             return newValue
         } catch {
             return defaultNumber
@@ -128,7 +140,9 @@ func readOrWriteIntegerFromFile(write newValue: Int? = nil) -> Int {
     if fileManager.fileExists(atPath: filePath.path) {
         do {
             let content = try String(contentsOf: filePath, encoding: .utf8)
-            if let number = Int(content.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            if let number = Int(
+                content.trimmingCharacters(in: .whitespacesAndNewlines)
+            ) {
                 return number
             } else {
                 return defaultNumber
@@ -139,7 +153,11 @@ func readOrWriteIntegerFromFile(write newValue: Int? = nil) -> Int {
     } else {
         // 文件不存在，创建文件并写入默认值
         do {
-            try "\(defaultNumber)".write(to: filePath, atomically: true, encoding: .utf8)
+            try "\(defaultNumber)".write(
+                to: filePath,
+                atomically: true,
+                encoding: .utf8
+            )
             return defaultNumber
         } catch {
             return defaultNumber
