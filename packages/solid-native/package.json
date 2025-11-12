@@ -1,0 +1,27 @@
+{
+  "name": "solid-native",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./dist/sdk.es.js",
+      "default": "./dist/sdk.es.js"
+    }
+  },
+  "dependencies": {
+    "solid-js": "^1.8.17"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.10",
+    "vite": "^5.2.0",
+    "vite-plugin-solid": "^2.10.2"
+  }
+}

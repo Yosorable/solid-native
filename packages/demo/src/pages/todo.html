@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>Simple Todo</title>
+    <meta
+      name="description"
+      content="简单单文件 Todo 列表 - 适配手机与暗色模式，不保存数据"
+    />
+    <style>
+      html {
+        color-scheme: light dark;
+      }
+      /* Reset-ish */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Noto Sans", "Helvetica Neue", Arial;
+        line-height: 1.4;
+        background: var(--bg);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Color variables and dark mode */
+      :root {
+        --bg: #f7f7fb;
+        --panel: #ffffff;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --accent-contrast: #ffffff;
+        --danger: #ef4444;
+        --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b1020;
+          --panel: #0f1724;
+          --muted: #9aa4bf;
+          --accent: #60a5fa;
+          --accent-contrast: #07203a;
+          --danger: #f87171;
+          --shadow: 0 6px 22px rgba(2, 6, 23, 0.6);
+        }
+      }
+
+      /* Layout */
+      .wrap {
+        display: flex;
+        align-items: flex-start;
+        padding: 28px 16px;
+      }
+      .card {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        background: var(--panel);
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      header h1 {
+        font-size: 18px;
+        margin: 0;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 8px;
+      }
+      .todo-input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        font-size: 15px;
+        background: transparent;
+        color: inherit;
+        outline: none;
+      }
+      .todo-input::placeholder {
+        color: var(--muted);
+      }
+      @media (prefers-color-scheme: dark) {
+        .todo-input {
+          border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+      }
+      .add-btn {
+        padding: 0 14px;
+        border-radius: 10px;
+        background: var(--accent);
+        color: var(--accent-contrast);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .add-btn:active {
+        transform: translateY(1px);
+      }
+
+      ul.todo-list {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      li.item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+      }
+      @media (prefers-color-scheme: dark) {
+        li.item {
+          border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+      }
+
+      .item .left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+      }
+      .checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        display: inline-grid;
+        place-items: center;
+        cursor: pointer;
+      }
+      @media (prefers-color-scheme: dark) {
+        .checkbox {
+          border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+      }
+      .checkbox.checked {
+        background: var(--accent);
+        border-color: transparent;
+        color: var(--accent-contrast);
+      }
+
+      .label {
+        font-size: 15px;
+      }
+      .label.done {
+        opacity: 0.6;
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .icon-btn {
+        background: transparent;
+        border: 0;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .del {
+        color: var(--danger);
+        font-weight: 600;
+      }
+
+      .empty {
+        color: var(--muted);
+        padding: 18px 12px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px dashed rgba(0, 0, 0, 0.04);
+      }
+      @media (prefers-color-scheme: dark) {
+        .empty {
+          border: 1px dashed rgba(255, 255, 255, 0.03);
+        }
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* Accessibility focus rings */
+      .todo-input:focus,
+      .add-btn:focus,
+      .icon-btn:focus,
+      .checkbox:focus {
+        outline: 3px solid rgba(37, 99, 235, 0.12);
+        outline-offset: 2px;
+      }
+
+      /* Small devices tweaks */
+      @media (max-width: 420px) {
+        .card {
+          padding: 16px;
+          border-radius: 12px;
+        }
+        header h1 {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <main class="card" role="application" aria-labelledby="app-title">
+        <header>
+          <div>
+            <h1 id="app-title">简单 Todo 列表</h1>
+            <p>轻量、响应式、支持暗色模式 — 不保存数据</p>
+          </div>
+        </header>
+
+        <section aria-labelledby="new-task">
+          <div class="input-row">
+            <input
+              id="taskInput"
+              class="todo-input"
+              type="text"
+              inputmode="text"
+              placeholder="添加新任务，回车或点击“添加"
+              aria-label="输入新任务"
+            />
+            <button id="addBtn" class="add-btn" aria-label="添加任务">
+              添加
+            </button>
+          </div>
+        </section>
+
+        <ul id="list" class="todo-list" aria-live="polite"></ul>
+
+        <div id="empty" class="empty" hidden>目前没有任务，添加一个吧 ✨</div>
+
+        <footer>
+          <div id="count">0 项待办</div>
+          <div>
+            <button id="clearCompleted" class="icon-btn" title="清除已完成">
+              清除已完成
+            </button>
+            <button id="clearAll" class="icon-btn del" title="清除全部">
+              清除全部
+            </button>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <script>
+      // 简单无持久化的 Todo
+      const input = document.getElementById("taskInput");
+      const addBtn = document.getElementById("addBtn");
+      const list = document.getElementById("list");
+      const empty = document.getElementById("empty");
+      const count = document.getElementById("count");
+      const clearCompleted = document.getElementById("clearCompleted");
+      const clearAll = document.getElementById("clearAll");
+
+      function updateEmptyAndCount() {
+        const items = list.querySelectorAll("li.item");
+        const total = items.length;
+        const done = list.querySelectorAll("li.item .checkbox.checked").length;
+        count.textContent = `${total} 项待办 · ${done} 已完成`;
+        empty.hidden = total > 0;
+      }
+
+      function makeItem(text) {
+        const li = document.createElement("li");
+        li.className = "item";
+
+        const left = document.createElement("div");
+        left.className = "left";
+
+        const cb = document.createElement("button");
+        cb.className = "checkbox";
+        cb.setAttribute("aria-pressed", "false");
+        cb.title = "标记完成";
+        cb.addEventListener("click", () => {
+          const checked = cb.classList.toggle("checked");
+          cb.setAttribute("aria-pressed", checked);
+          label.classList.toggle("done", checked);
+          updateEmptyAndCount();
+        });
+
+        const label = document.createElement("div");
+        label.className = "label";
+        label.textContent = text;
+        label.tabIndex = 0;
+        // 双击编辑
+        label.addEventListener("dblclick", () => {
+          const val = prompt("编辑任务", label.textContent);
+          if (val !== null) {
+            label.textContent = val.trim() || label.textContent;
+          }
+        });
+
+        left.appendChild(cb);
+        left.appendChild(label);
+
+        const controls = document.createElement("div");
+        controls.className = "controls";
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "icon-btn del";
+        delBtn.title = "删除";
+        delBtn.innerText = "删除";
+        delBtn.addEventListener("click", () => {
+          li.remove();
+          updateEmptyAndCount();
+        });
+
+        controls.appendChild(delBtn);
+
+        li.appendChild(left);
+        li.appendChild(controls);
+
+        return li;
+      }
+
+      function addTask() {
+        const v = input.value.trim();
+        if (!v) return;
+        const item = makeItem(v);
+        list.prepend(item);
+        input.value = "";
+        input.focus();
+        updateEmptyAndCount();
+      }
+
+      addBtn.addEventListener("click", addTask);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addTask();
+      });
+
+      clearCompleted.addEventListener("click", () => {
+        list
+          .querySelectorAll(".checkbox.checked")
+          .forEach((cb) => cb.closest("li").remove());
+        updateEmptyAndCount();
+      });
+      clearAll.addEventListener("click", () => {
+        if (!confirm("确认清除全部任务？")) return;
+        list.innerHTML = "";
+        updateEmptyAndCount();
+      });
+
+      // 初始化状态
+      updateEmptyAndCount();
+
+      // 触控友好：扩大点击目标（在一些浏览器里）
+      (function () {
+        if ("ontouchstart" in window) {
+          document.body.style["-webkit-tap-highlight-color"] = "transparent";
+        }
+      })();
+    </script>
+  </body>
+</html>

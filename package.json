@@ -1,0 +1,11 @@
+{
+  "name": "solid-native",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "pnpm --filter ./packages/demo run dev",
+    "build": "pnpm --filter ./packages/demo run build",
+    "preview": "pnpm --filter ./packages/demo run preview",
+    "pack": "pnpm run build && pnpm run preview",
+    "build-sdk": "pnpm --filter ./packages/solid-native run build"
+  }
+}
