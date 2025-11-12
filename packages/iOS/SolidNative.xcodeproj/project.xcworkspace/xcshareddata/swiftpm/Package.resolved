@@ -1,13 +1,13 @@
 {
-  "originHash" : "25f2de26c197a71b0600a0dab6ce80d471e2452ee55a8faa997d4acf5aa0085a",
+  "originHash" : "f32e8f1b3c4b22b87a272f05501ebfba8379f2bde6ef1cd2f16c098bc3bf8e0f",
   "pins" : [
     {
       "identity" : "ecmaswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Yosorable/ECMASwift",
       "state" : {
-        "branch" : "main",
-        "revision" : "c37df397bed2ee7cd5c98d34610098ed13a14d7f"
+        "revision" : "92f4e3b51d4aed0ebaa0993f5801833b45cdac6c",
+        "version" : "0.0.2"
       }
     },
     {
